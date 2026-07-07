@@ -6,10 +6,23 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { type NavItem } from '@/types';
 import { computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Megaphone, ShieldCheck, Users, FileText } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, Megaphone, ShieldCheck, Users, FileText, Globe } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const page = usePage();
+
+const footerNavItems: NavItem[] = [
+    {
+        title: 'Public Portal',
+        href: '/',
+        icon: Globe,
+    },
+    {
+        title: 'Verify Member ID',
+        href: '/check-status',
+        icon: ShieldCheck,
+    },
+];
 
 const mainNavItems = computed<NavItem[]>(() => {
     const items: NavItem[] = [
