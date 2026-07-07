@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,7 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable;
 
     /**
@@ -26,6 +27,7 @@ class User extends Authenticatable
         'state_id',
         'lga_id',
         'ward_id',
+        'polling_unit_id',
     ];
 
     /**
@@ -66,7 +68,12 @@ class User extends Authenticatable
         return $this->belongsTo(Ward::class);
     }
 
-    public function hasJurisdictionOver(?int $stateId, ?int $lgaId, ?int $wardId): bool
+    public function pollingUnit(): BelongsTo
+    {
+        return $this->belongsTo(PollingUnit::class);
+    }
+
+    public function hasJurisdictionOver(?int $stateId, ?int $lgaId, ?int $wardId, ?int $pollingUnitId = null): bool
     {
         if ($this->hasRole(['Super Administrator', 'National Administrator'])) {
             return true;
@@ -82,6 +89,10 @@ class User extends Authenticatable
 
         if ($this->hasRole('Ward Coordinator')) {
             return $this->ward_id && $this->ward_id === $wardId;
+        }
+
+        if ($this->hasRole('Polling Unit Coordinator')) {
+            return $this->polling_unit_id && $this->polling_unit_id === $pollingUnitId;
         }
 
         return false;

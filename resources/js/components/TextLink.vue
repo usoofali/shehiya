@@ -3,7 +3,7 @@ import { Link } from '@inertiajs/vue3';
 
 interface Props {
     href: string;
-    tabindex?: number;
+    tabindex?: number | string;
     method?: string;
     as?: string;
 }

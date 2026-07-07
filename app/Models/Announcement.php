@@ -14,6 +14,7 @@ class Announcement extends Model
     protected $fillable = [
         'title',
         'content',
+        'image_path',
         'type',
         'published_by_user_id',
         'target_level',

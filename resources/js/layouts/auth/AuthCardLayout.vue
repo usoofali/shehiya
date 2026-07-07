@@ -13,8 +13,8 @@ defineProps<{
     <div class="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
         <div class="flex w-full max-w-md flex-col gap-6">
             <Link :href="route('home')" class="flex items-center gap-2 self-center font-medium">
-                <div class="flex h-9 w-9 items-center justify-center">
-                    <AppLogoIcon class="size-9 fill-current text-black dark:text-white" />
+                <div class="flex size-14 items-center justify-center overflow-hidden rounded-xl bg-white shadow-md shadow-amber-500/10">
+                    <img src="/logo.png" alt="Shaihiyya Logo" class="h-full w-full object-cover p-1" />
                 </div>
             </Link>
 

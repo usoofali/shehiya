@@ -15,22 +15,33 @@ class EscoOfficial extends Model
         'member_id',
         'user_id',
         'full_name',
-        'position',
+        'position_id',
         'phone',
         'email',
         'photo_path',
         'state_id',
         'lga_id',
         'ward_id',
+        'polling_unit_id',
         'appointed_at',
         'status',
     ];
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
             'appointed_at' => 'date',
         ];
+    }
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class);
     }
 
     public function member(): BelongsTo
@@ -58,6 +69,11 @@ class EscoOfficial extends Model
         return $this->belongsTo(Ward::class);
     }
 
+    public function pollingUnit(): BelongsTo
+    {
+        return $this->belongsTo(PollingUnit::class);
+    }
+
     public function scopeAccessibleBy(Builder $query, User $user): Builder
     {
         if ($user->hasRole(['Super Administrator', 'National Administrator'])) {
@@ -74,6 +90,10 @@ class EscoOfficial extends Model
 
         if ($user->hasRole('Ward Coordinator') && $user->ward_id) {
             return $query->where('ward_id', $user->ward_id);
+        }
+
+        if ($user->hasRole('Polling Unit Coordinator') && $user->polling_unit_id) {
+            return $query->where('polling_unit_id', $user->polling_unit_id);
         }
 
         return $query->whereRaw('1 = 0');

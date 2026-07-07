@@ -25,7 +25,7 @@ const submit = () => {
         </div>
 
         <form @submit.prevent="submit" class="space-y-6 text-center">
-            <Button :disabled="form.processing" variant="secondary">
+            <Button :disabled="form.processing" class="w-full rounded-xl bg-gradient-to-r from-amber-600 to-emerald-600 py-6 text-sm font-bold text-white shadow-md shadow-amber-600/20 hover:from-amber-500 hover:to-emerald-500">
                 <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                 Resend verification email
             </Button>

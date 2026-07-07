@@ -10,10 +10,11 @@ defineProps<{
 
 <template>
     <header
-        class="flex h-16 shrink-0 items-center gap-2 border-b border-sidebar-border/70 px-6 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 md:px-4"
+        class="relative flex h-16 shrink-0 items-center gap-2 border-b border-sidebar-border/70 bg-white/80 px-6 backdrop-blur-md transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 md:px-4 dark:bg-slate-900/80"
     >
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-600 via-emerald-600 to-amber-600"></div>
         <div class="flex items-center gap-2">
-            <SidebarTrigger class="-ml-1" />
+            <SidebarTrigger class="-ml-1 hover:bg-amber-500/10 hover:text-amber-600" />
             <template v-if="breadcrumbs.length > 0">
                 <Breadcrumb>
                     <BreadcrumbList>

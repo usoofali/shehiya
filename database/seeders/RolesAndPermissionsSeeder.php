@@ -29,37 +29,49 @@ class RolesAndPermissionsSeeder extends Seeder
             'view announcements',
             'create announcements',
             'delete announcements',
+            'manage coordinators',
+            'create coordinators',
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
         // create roles and assign created permissions
-        $superAdmin = Role::create(['name' => 'Super Administrator']);
+        $superAdmin = Role::firstOrCreate(['name' => 'Super Administrator']);
         $superAdmin->givePermissionTo(Permission::all());
 
-        $nationalAdmin = Role::create(['name' => 'National Administrator']);
+        $nationalAdmin = Role::firstOrCreate(['name' => 'National Administrator']);
         $nationalAdmin->givePermissionTo([
             'view members', 'create members', 'edit members', 'verify members',
             'view esco', 'manage esco',
             'view announcements', 'create announcements',
+            'manage coordinators', 'create coordinators',
         ]);
 
-        $stateCoordinator = Role::create(['name' => 'State Coordinator']);
+        $stateCoordinator = Role::firstOrCreate(['name' => 'State Coordinator']);
         $stateCoordinator->givePermissionTo([
             'view members', 'create members', 'edit members', 'verify members',
-            'view esco', 'view announcements', 'create announcements',
+            'view esco', 'manage esco', 'view announcements', 'create announcements',
+            'manage coordinators', 'create coordinators',
         ]);
 
-        $lgaCoordinator = Role::create(['name' => 'LGA Coordinator']);
+        $lgaCoordinator = Role::firstOrCreate(['name' => 'LGA Coordinator']);
         $lgaCoordinator->givePermissionTo([
             'view members', 'create members', 'edit members', 'verify members',
-            'view esco', 'view announcements', 'create announcements',
+            'view esco', 'manage esco', 'view announcements', 'create announcements',
+            'manage coordinators', 'create coordinators',
         ]);
 
-        $wardCoordinator = Role::create(['name' => 'Ward Coordinator']);
+        $wardCoordinator = Role::firstOrCreate(['name' => 'Ward Coordinator']);
         $wardCoordinator->givePermissionTo([
+            'view members', 'create members', 'edit members', 'verify members',
+            'view esco', 'manage esco', 'view announcements',
+            'manage coordinators', 'create coordinators',
+        ]);
+
+        $pollingUnitCoordinator = Role::firstOrCreate(['name' => 'Polling Unit Coordinator']);
+        $pollingUnitCoordinator->givePermissionTo([
             'view members', 'create members', 'edit members', 'verify members',
             'view esco', 'view announcements',
         ]);
