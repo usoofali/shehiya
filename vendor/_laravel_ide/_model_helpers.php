@@ -7,13 +7,12 @@ namespace App\Models {
      *
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property \Illuminate\Support\Carbon|null $created_at
-     * @property mixed $ward_id
-     * @property mixed $lga_id
-     * @property mixed $state_id
-     * @property mixed $target_level
-     * @property mixed $published_by_user_id
-     * @property mixed $type
-     * @property string|null $image_path
+     * @property int|null $ward_id
+     * @property int|null $lga_id
+     * @property int|null $state_id
+     * @property string $target_level
+     * @property int $published_by_user_id
+     * @property string $type
      * @property string $content
      * @property string $title
      * @property int $id
@@ -24,7 +23,6 @@ namespace App\Models {
      * @method static \Illuminate\Database\Eloquent\Builder<Announcement>|Announcement whereId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Announcement>|Announcement whereTitle($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Announcement>|Announcement whereContent($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<Announcement>|Announcement whereImagePath($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Announcement>|Announcement whereType($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Announcement>|Announcement wherePublishedByUserId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Announcement>|Announcement whereTargetLevel($value)
@@ -354,19 +352,18 @@ namespace App\Models {
      *
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property \Illuminate\Support\Carbon|null $created_at
-     * @property mixed $status
+     * @property string $status
      * @property \Illuminate\Support\Carbon $appointed_at
-     * @property mixed $polling_unit_id
-     * @property mixed $ward_id
-     * @property mixed $lga_id
-     * @property mixed $state_id
+     * @property int|null $ward_id
+     * @property int|null $lga_id
+     * @property int|null $state_id
      * @property string|null $photo_path
      * @property string|null $email
      * @property string $phone
-     * @property mixed $position_id
+     * @property string $position
      * @property string $full_name
-     * @property mixed $user_id
-     * @property mixed $member_id
+     * @property int|null $user_id
+     * @property int|null $member_id
      * @property int $id
      * @property-read \App\Models\Position $position
      * @property-read \App\Models\Member $member
@@ -379,14 +376,13 @@ namespace App\Models {
      * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial whereMemberId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial whereUserId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial whereFullName($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial wherePositionId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial wherePosition($value)
      * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial wherePhone($value)
      * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial whereEmail($value)
      * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial wherePhotoPath($value)
      * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial whereStateId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial whereLgaId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial whereWardId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial wherePollingUnitId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial whereAppointedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial whereStatus($value)
      * @method static \Illuminate\Database\Eloquent\Builder<EscoOfficial>|EscoOfficial whereCreatedAt($value)
@@ -713,7 +709,7 @@ namespace App\Models {
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property \Illuminate\Support\Carbon|null $created_at
      * @property string $name
-     * @property mixed $state_id
+     * @property int $state_id
      * @property int $id
      * @property-read \App\Models\State $state
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Ward> $wards
@@ -1043,15 +1039,13 @@ namespace App\Models {
     /**
      * App\Models\Member
      *
-     * @property mixed $referred_by_id
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property \Illuminate\Support\Carbon|null $created_at
      * @property \Illuminate\Support\Carbon $registered_at
-     * @property mixed $status
-     * @property mixed $polling_unit_id
-     * @property mixed $ward_id
-     * @property mixed $lga_id
-     * @property mixed $state_id
+     * @property string $status
+     * @property int $ward_id
+     * @property int $lga_id
+     * @property int $state_id
      * @property string|null $photo_path
      * @property string|null $occupation
      * @property string|null $email
@@ -1089,12 +1083,10 @@ namespace App\Models {
      * @method static \Illuminate\Database\Eloquent\Builder<Member>|Member whereStateId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Member>|Member whereLgaId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Member>|Member whereWardId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<Member>|Member wherePollingUnitId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Member>|Member whereStatus($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Member>|Member whereRegisteredAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Member>|Member whereCreatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Member>|Member whereUpdatedAt($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<Member>|Member whereReferredById($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Member>|Member newModelQuery()
      * @method static \Illuminate\Database\Eloquent\Builder<Member>|Member newQuery()
      * @method static \Illuminate\Database\Eloquent\Builder<Member>|Member query()
@@ -1419,8 +1411,8 @@ namespace App\Models {
      * @property string|null $comments
      * @property string $new_status
      * @property string $previous_status
-     * @property mixed $verified_by_user_id
-     * @property mixed $member_id
+     * @property int|null $verified_by_user_id
+     * @property int $member_id
      * @property int $id
      * @property-read \App\Models\Member $member
      * @property-read \App\Models\User $verifiedBy
@@ -1750,20 +1742,6 @@ namespace App\Models {
     /**
      * App\Models\MovementContent
      *
-     * @property \Illuminate\Support\Carbon|null $updated_at
-     * @property \Illuminate\Support\Carbon|null $created_at
-     * @property string|null $image_url
-     * @property string|null $body
-     * @property string $title
-     * @property string $key
-     * @property int $id
-     * @method static \Illuminate\Database\Eloquent\Builder<MovementContent>|MovementContent whereId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<MovementContent>|MovementContent whereKey($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<MovementContent>|MovementContent whereTitle($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<MovementContent>|MovementContent whereBody($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<MovementContent>|MovementContent whereImageUrl($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<MovementContent>|MovementContent whereCreatedAt($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<MovementContent>|MovementContent whereUpdatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<MovementContent>|MovementContent newModelQuery()
      * @method static \Illuminate\Database\Eloquent\Builder<MovementContent>|MovementContent newQuery()
      * @method static \Illuminate\Database\Eloquent\Builder<MovementContent>|MovementContent query()
@@ -2082,21 +2060,9 @@ namespace App\Models {
     /**
      * App\Models\PollingUnit
      *
-     * @property \Illuminate\Support\Carbon|null $updated_at
-     * @property \Illuminate\Support\Carbon|null $created_at
-     * @property string|null $code
-     * @property string $name
-     * @property mixed $ward_id
-     * @property int $id
      * @property-read \App\Models\Ward $ward
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Member> $members
      * @property-read int|null $members_count
-     * @method static \Illuminate\Database\Eloquent\Builder<PollingUnit>|PollingUnit whereId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<PollingUnit>|PollingUnit whereWardId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<PollingUnit>|PollingUnit whereName($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<PollingUnit>|PollingUnit whereCode($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<PollingUnit>|PollingUnit whereCreatedAt($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<PollingUnit>|PollingUnit whereUpdatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<PollingUnit>|PollingUnit newModelQuery()
      * @method static \Illuminate\Database\Eloquent\Builder<PollingUnit>|PollingUnit newQuery()
      * @method static \Illuminate\Database\Eloquent\Builder<PollingUnit>|PollingUnit query()
@@ -2415,16 +2381,8 @@ namespace App\Models {
     /**
      * App\Models\Position
      *
-     * @property \Illuminate\Support\Carbon|null $updated_at
-     * @property \Illuminate\Support\Carbon|null $created_at
-     * @property string $name
-     * @property int $id
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\EscoOfficial> $escoOfficials
      * @property-read int|null $esco_officials_count
-     * @method static \Illuminate\Database\Eloquent\Builder<Position>|Position whereId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<Position>|Position whereName($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<Position>|Position whereCreatedAt($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<Position>|Position whereUpdatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Position>|Position newModelQuery()
      * @method static \Illuminate\Database\Eloquent\Builder<Position>|Position newQuery()
      * @method static \Illuminate\Database\Eloquent\Builder<Position>|Position query()
@@ -3077,15 +3035,14 @@ namespace App\Models {
     /**
      * App\Models\User
      *
+     * @property int|null $ward_id
+     * @property int|null $lga_id
+     * @property int|null $state_id
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property \Illuminate\Support\Carbon|null $created_at
      * @property string|null $remember_token
      * @property string $password
      * @property \Illuminate\Support\Carbon|null $email_verified_at
-     * @property mixed $polling_unit_id
-     * @property mixed $ward_id
-     * @property mixed $lga_id
-     * @property mixed $state_id
      * @property string $email
      * @property string $name
      * @property int $id
@@ -3102,15 +3059,14 @@ namespace App\Models {
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereName($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereEmail($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereStateId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereLgaId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereWardId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<User>|User wherePollingUnitId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereEmailVerifiedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User wherePassword($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereRememberToken($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereCreatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereUpdatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereStateId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereLgaId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereWardId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User newModelQuery()
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User newQuery()
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User query()
@@ -3436,7 +3392,7 @@ namespace App\Models {
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property \Illuminate\Support\Carbon|null $created_at
      * @property string $name
-     * @property mixed $lga_id
+     * @property int $lga_id
      * @property int $id
      * @property-read \App\Models\Lga $lga
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Member> $members
