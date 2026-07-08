@@ -110,7 +110,25 @@ const missionPoints = [
 </script>
 
 <template>
-    <Head title="Shaihiyya Amanar Jagora Support Organization — Official Gateway" />
+    <Head title="Shaihiyya Amanar Jagora Support Organization — Official Gateway">
+        <meta name="description" content="Official Gateway of Shaihiyya Amanar Jagora Support Organization — a permanent grassroots political and community support organization across Nigeria dedicated to leadership development, civic participation, and sustainable development." />
+        <meta name="keywords" content="Shaihiyya, Shaihiyya Amanar Jagora, Senator Abdul'aziz Abubakar Yari, Jagora, Zamfara State, Support Organization, Grassroots Organization, Nigeria Politics, Community Support, Civic Participation, Leadership Development" />
+        <meta name="author" content="Shaihiyya Amanar Jagora Support Organization" />
+        <meta name="robots" content="index, follow" />
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Shaihiyya Amanar Jagora Support Organization — Official Gateway" />
+        <meta property="og:description" content="Join and support Shaihiyya Amanar Jagora Support Organization — empowering citizens, fostering unity, and promoting effective leadership and sustainable development across Nigeria." />
+        <meta property="og:image" content="/logo.png" />
+        <meta property="og:site_name" content="Shaihiyya Amanar Jagora Support Organization" />
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Shaihiyya Amanar Jagora Support Organization — Official Gateway" />
+        <meta name="twitter:description" content="Official Gateway of Shaihiyya Amanar Jagora Support Organization — empowering citizens, fostering unity, and promoting effective leadership across Nigeria." />
+        <meta name="twitter:image" content="/logo.png" />
+    </Head>
 
     <div class="min-h-screen bg-slate-50 text-slate-900 selection:bg-amber-500 selection:text-white dark:bg-slate-950 dark:text-slate-100">
         <!-- Top Navigation -->
