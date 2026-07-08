@@ -28,8 +28,8 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthBase title="Welcome Back, Coordinator" description="Sign in to your Shaihiyya Amanar Jagora Platform account to manage members, verify registrations, and coordinate your jurisdiction.">
-        <Head title="Portal Login — Shaihiyya Amanar Jagora Platform" />
+    <AuthBase title="Welcome Back, Coordinator" description="Sign in to your Shaihiyya Amanar Jagora Support Organization account to manage members, verify registrations, and coordinate your jurisdiction.">
+        <Head title="Portal Login — Shaihiyya Amanar Jagora Support Organization" />
 
         <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
             {{ status }}

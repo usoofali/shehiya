@@ -28,7 +28,7 @@ defineProps<{
                     </div>
                     <div>
                         <span class="block text-lg font-black tracking-tight text-white">SHAIHIYYA AMANAR JAGORA</span>
-                        <span class="block text-[11px] font-bold uppercase tracking-widest text-amber-400">Platform</span>
+                        <span class="block text-[11px] font-bold uppercase tracking-widest text-amber-400">Support Organization</span>
                     </div>
                 </Link>
 
@@ -83,11 +83,14 @@ defineProps<{
         <div class="flex h-full w-full flex-col justify-center p-6 sm:p-10 lg:p-12">
             <!-- Mobile Logo Header -->
             <div class="mb-8 flex items-center justify-between lg:hidden">
-                <Link :href="route('home')" class="flex items-center gap-2.5">
-                    <div class="flex size-14 items-center justify-center overflow-hidden rounded-xl bg-white shadow-md shadow-amber-500/10">
+                <Link :href="route('home')" class="flex items-center gap-2 sm:gap-2.5">
+                    <div class="flex size-9 sm:size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-md shadow-amber-500/10">
                         <img src="/logo.png" alt="Shaihiyya Logo" class="h-full w-full object-cover p-1" />
                     </div>
-                    <span class="text-base font-black tracking-tight text-slate-900 dark:text-white">SHAIHIYYA AMANAR JAGORA</span>
+                    <div>
+                        <span class="block text-sm sm:text-base font-black tracking-tight text-slate-900 dark:text-white">SHAIHIYYA AMANAR JAGORA</span>
+                        <span class="block text-[10px] sm:text-xs font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">Support Organization</span>
+                    </div>
                 </Link>
                 <Link :href="route('home')" class="text-xs font-semibold text-amber-600 hover:underline dark:text-amber-400">
                     &larr; Home

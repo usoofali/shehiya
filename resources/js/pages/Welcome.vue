@@ -110,38 +110,37 @@ const missionPoints = [
 </script>
 
 <template>
-    <Head title="Shaihiyya Amanar Jagora Platform — Official Gateway" />
+    <Head title="Shaihiyya Amanar Jagora Support Organization — Official Gateway" />
 
     <div class="min-h-screen bg-slate-50 text-slate-900 selection:bg-amber-500 selection:text-white dark:bg-slate-950 dark:text-slate-100">
         <!-- Top Navigation -->
         <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-950/80">
-            <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-                <div class="flex items-center gap-3">
-                    <div class="flex size-14 items-center justify-center overflow-hidden rounded-full bg-white shadow-md shadow-amber-500/10">
+            <div class="mx-auto flex max-w-7xl items-center justify-between px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
+                <div class="flex min-w-0 items-center gap-2 sm:gap-3">
+                    <div class="flex size-9 sm:size-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-md shadow-amber-500/10">
                         <img src="/logo.png" alt="Shaihiyya Logo" class="h-full w-full object-cover p-1" />
                     </div>
-                    <div>
-                        <span class="text-lg font-black tracking-tight sm:text-xl">SHAIHIYYA AMANAR JAGORA</span>
-                        <span class="hidden text-xs font-semibold uppercase tracking-widest text-amber-600 sm:block dark:text-amber-400">Platform</span>
+                    <div class="min-w-0">
+                        <span class="block truncate sm:overflow-visible text-xs sm:text-xl font-black tracking-tight">SHAIHIYYA AMANAR JAGORA</span>
+                        <span class="block truncate sm:overflow-visible text-[9px] sm:text-xs font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">Support Organization</span>
                     </div>
                 </div>
 
-                <nav class="flex items-center gap-3">
+                <nav class="flex shrink-0 items-center gap-2 sm:gap-3">
                     <Link
                         v-if="$page.props.auth.user"
                         :href="route('dashboard')"
-                        class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-600 to-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-amber-600/20 transition hover:from-amber-500 hover:to-emerald-500"
+                        class="inline-flex shrink-0 items-center gap-1 sm:gap-2 rounded-xl bg-gradient-to-r from-amber-600 to-emerald-600 px-3 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold text-white shadow-md shadow-amber-600/20 transition hover:from-amber-500 hover:to-emerald-500"
                     >
-                        Dashboard <ChevronRight class="size-4" />
+                        Dashboard <ChevronRight class="size-3.5 sm:size-4" />
                     </Link>
-                    <template v-else>
-                        <Link
-                            :href="route('register')"
-                            class="inline-flex items-center gap-1.5 rounded-xl bg-amber-600 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-amber-600/20 transition hover:bg-amber-500"
-                        >
-                            Join Shaihiyya
-                        </Link>
-                    </template>
+                    <Link
+                        v-else
+                        :href="route('register')"
+                        class="inline-flex shrink-0 items-center gap-1 sm:gap-1.5 rounded-xl bg-gradient-to-r from-amber-600 to-emerald-600 px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold text-white shadow-md shadow-amber-600/20 transition hover:from-amber-500 hover:to-emerald-500"
+                    >
+                        Join <ChevronRight class="size-3.5 sm:size-4" />
+                    </Link>
                 </nav>
             </div>
         </header>
@@ -386,14 +385,18 @@ const missionPoints = [
         <footer class="border-t border-slate-200 bg-white py-12 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
             <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 sm:flex-row sm:px-6 lg:px-8">
                 <div class="flex items-center gap-3 font-bold text-slate-900 dark:text-white">
-                    <img src="/logo.png" alt="Shaihiyya Logo" class="size-10 object-contain" /> Shaihiyya Amanar Jagora
+                    <img src="/logo.png" alt="Shaihiyya Logo" class="size-10 object-contain" />
+                    <div>
+                        <span class="block text-sm font-bold text-slate-900 dark:text-white">Shaihiyya Amanar Jagora</span>
+                        <span class="block text-[10px] font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">Support Organization</span>
+                    </div>
                 </div>
                 <div class="text-center">
                     <p>&copy; {{ new Date().getFullYear() }} Shaihiyya Amanar Jagora. All rights reserved.</p>
                     <p class="mt-1 text-xs font-medium text-slate-500 dark:text-slate-500">Developed by YUM IT SOLUTIONS LTD. +2348167768410</p>
                 </div>
                 <div class="flex gap-6">
-                    <Link :href="route('login')" class="hover:underline">Portal Login</Link>
+                    <Link :href="route('login')" class="hover:underline">Coordinator Login</Link>
                     <Link :href="route('register')" class="hover:underline">Member Registration</Link>
                 </div>
             </div>

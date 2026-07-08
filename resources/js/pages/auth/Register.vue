@@ -127,15 +127,15 @@ const selectClass = 'mt-1 w-full rounded-xl border border-slate-300 bg-white px-
     <div class="min-h-screen bg-slate-50 selection:bg-amber-500 selection:text-white dark:bg-slate-950">
         <!-- Sticky Header -->
         <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/80">
-            <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4 sm:px-6">
-                <Link :href="route('home')" class="flex items-center gap-2.5">
-                    <div class="flex size-12 items-center justify-center overflow-hidden rounded-full bg-white shadow-md shadow-amber-500/10">
+            <div class="mx-auto flex max-w-4xl items-center justify-between px-3 py-3 sm:px-6 sm:py-4">
+                <Link :href="route('home')" class="flex items-center gap-2 sm:gap-2.5">
+                    <div class="flex size-9 sm:size-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-md shadow-amber-500/10">
                         <img src="/logo.png" alt="Shaihiyya Logo" class="h-full w-full object-cover p-1" />
                     </div>
-                    <span class="text-base font-black tracking-tight text-slate-900 dark:text-white">SHAIHIYYA AMANAR JAGORA</span>
-                </Link>
-                <Link :href="route('login')" class="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-600 hover:underline dark:text-amber-400">
-                    Coordinator Login <ChevronRight class="size-3.5" />
+                    <div>
+                        <span class="block text-sm sm:text-base font-black tracking-tight text-slate-900 dark:text-white">SHAIHIYYA AMANAR JAGORA</span>
+                        <span class="block text-[10px] sm:text-xs font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">Support Organization</span>
+                    </div>
                 </Link>
             </div>
         </header>
@@ -351,5 +351,26 @@ const selectClass = 'mt-1 w-full rounded-xl border border-slate-300 bg-white px-
                 </div>
             </div>
         </div>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-200 bg-white py-12 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
+            <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 sm:flex-row sm:px-6 lg:px-8">
+                <div class="flex items-center gap-3 font-bold text-slate-900 dark:text-white">
+                    <img src="/logo.png" alt="Shaihiyya Logo" class="size-10 object-contain" />
+                    <div>
+                        <span class="block text-sm font-bold text-slate-900 dark:text-white">Shaihiyya Amanar Jagora</span>
+                        <span class="block text-[10px] font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">Support Organization</span>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p>&copy; {{ new Date().getFullYear() }} Shaihiyya Amanar Jagora. All rights reserved.</p>
+                    <p class="mt-1 text-xs font-medium text-slate-500 dark:text-slate-500">Developed by YUM IT SOLUTIONS LTD. +2348167768410</p>
+                </div>
+                <div class="flex gap-6">
+                    <Link :href="route('login')" class="hover:underline">Coordinator Login</Link>
+                    <Link :href="route('home')" class="hover:underline">Home</Link>
+                </div>
+            </div>
+        </footer>
     </div>
 </template>
