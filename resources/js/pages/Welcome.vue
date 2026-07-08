@@ -136,12 +136,6 @@ const missionPoints = [
                     </Link>
                     <template v-else>
                         <Link
-                            :href="route('login')"
-                            class="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
-                        >
-                            Log in
-                        </Link>
-                        <Link
                             :href="route('register')"
                             class="inline-flex items-center gap-1.5 rounded-xl bg-amber-600 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-amber-600/20 transition hover:bg-amber-500"
                         >
