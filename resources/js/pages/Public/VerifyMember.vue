@@ -23,16 +23,16 @@ defineProps<{
         <!-- Sticky Header -->
         <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/80">
             <div class="mx-auto flex max-w-4xl items-center justify-center px-4 py-4 sm:px-6">
-                <Link :href="route('home')" class="flex items-center gap-2.5">
-                    <div class="flex size-12 items-center justify-center overflow-hidden rounded-xl bg-white shadow-md shadow-amber-500/10">
+                <Link :href="route('home')" class="flex items-center gap-2 sm:gap-2.5">
+                    <div class="flex size-10 sm:size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-md shadow-amber-500/10">
                         <img src="/logo.png" alt="Shaihiyya Logo" class="h-full w-full object-cover p-1" />
                     </div>
-                    <span class="text-base font-black tracking-tight text-slate-900 dark:text-white">SHAIHIYYA AMANAR JAGORA</span>
+                    <span class="text-sm sm:text-base font-black tracking-tight text-slate-900 dark:text-white">SHAIHIYYA AMANAR JAGORA</span>
                 </Link>
             </div>
         </header>
 
-        <div class="flex flex-col items-center justify-center px-4 py-10 sm:px-6">
+        <div class="flex flex-col items-center justify-center px-4 py-8 sm:px-6 sm:py-10">
             <div class="w-full max-w-md">
                 <div class="mb-6 text-center">
                     <h1 class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">Authenticity Check</h1>
@@ -41,7 +41,7 @@ defineProps<{
 
                 <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900">
                     <!-- Status Banner -->
-                    <div class="bg-gradient-to-r px-6 py-8 text-center text-white"
+                    <div class="bg-gradient-to-r px-5 pt-8 pb-16 text-center text-white sm:px-6"
                         :class="member.status === 'verified' ? 'from-emerald-500 to-emerald-700' : 'from-amber-500 to-amber-700'">
                         <div class="mx-auto mb-3 flex size-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
                             <ShieldCheck v-if="member.status === 'verified'" class="size-8" />
@@ -50,14 +50,14 @@ defineProps<{
                         <h2 class="text-xl font-black uppercase tracking-wider">
                             {{ member.status === 'verified' ? 'Verified Member' : 'Pending Verification' }}
                         </h2>
-                        <p class="mt-1 text-sm font-medium text-white/80 opacity-90">
+                        <p class="mt-1.5 text-xs sm:text-sm font-medium text-white/90">
                             {{ member.status === 'verified' ? 'Valid Shaihiyya Amanar Jagora Credentials' : 'Awaiting Coordinator Approval' }}
                         </p>
                     </div>
 
-                    <div class="p-6 sm:p-8">
+                    <div class="p-5 sm:p-8">
                         <!-- Profile Photo -->
-                        <div class="mx-auto -mt-16 mb-6 size-24 overflow-hidden rounded-2xl border-[4px] border-white bg-slate-100 shadow-md dark:border-slate-900 dark:bg-slate-800">
+                        <div class="relative z-10 mx-auto -mt-16 mb-6 size-24 shrink-0 overflow-hidden rounded-2xl border-[4px] border-white bg-slate-100 shadow-md dark:border-slate-900 dark:bg-slate-800">
                             <img v-if="member.photo_url" :src="member.photo_url" :alt="member.name" class="h-full w-full object-cover" />
                             <div v-else class="flex h-full w-full items-center justify-center text-slate-400">
                                 <User class="size-10" />

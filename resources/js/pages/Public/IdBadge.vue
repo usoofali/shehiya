@@ -28,8 +28,11 @@ const downloadBadge = async () => {
         await new Promise(resolve => setTimeout(resolve, 100));
         // Briefly remove border/shadow before capturing to ensure a clean CR80 edge
         const originalClasses = badgeRef.value.className;
+        const originalWidth = badgeRef.value.style.width;
+        const originalHeight = badgeRef.value.style.height;
         badgeRef.value.classList.remove('shadow-2xl', 'sm:w-[320px]', 'w-full', 'max-w-[320px]');
         badgeRef.value.style.width = '320px';
+        badgeRef.value.style.height = '510px';
         
         const canvas = await html2canvas(badgeRef.value, {
             scale: 3, // High resolution
@@ -40,7 +43,8 @@ const downloadBadge = async () => {
         
         // Restore styling
         badgeRef.value.className = originalClasses;
-        badgeRef.value.style.width = '';
+        badgeRef.value.style.width = originalWidth;
+        badgeRef.value.style.height = originalHeight;
         
         const link = document.createElement('a');
         link.download = `Shaihiyya-Badge-${props.member.membership_number}.png`;
@@ -77,7 +81,7 @@ const verificationUrl = window.location.origin + '/verify/' + props.member.membe
         <!-- ID Card Container -->
         <div class="flex items-center justify-center pt-24 pb-12 print:p-0 print:pt-0">
             <!-- The Card (CR80 Standard size: 2.125" x 3.375", represented here conceptually but scalable for print) -->
-            <div ref="badgeRef" class="badge-card relative overflow-hidden rounded-[14px] bg-white shadow-2xl print:shadow-none sm:w-[320px] w-full max-w-[320px] aspect-[2.125/3.375] flex flex-col border border-slate-200 print:border-none">
+            <div ref="badgeRef" class="badge-card relative overflow-hidden rounded-[14px] bg-white shadow-2xl print:shadow-none sm:w-[320px] w-full max-w-[320px] min-h-[510px] aspect-[2.125/3.375] flex flex-col border border-slate-200 print:border-none">
 
                 <!-- Unverified Overlay Warning -->
                 <div v-if="member.status !== 'verified'" class="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
@@ -121,7 +125,7 @@ const verificationUrl = window.location.origin + '/verify/' + props.member.membe
 
                     <!-- Member Info -->
                     <div class="w-full text-center">
-                        <h3 class="text-[15px] font-black uppercase leading-tight text-slate-900 line-clamp-2">{{ member.name }}</h3>
+                        <h3 class="px-1 text-[14px] font-black uppercase leading-[1.3] text-slate-900 break-words">{{ member.name }}</h3>
                         <p class="mt-0.5 font-mono text-[11px] font-bold text-amber-600">{{ member.membership_number }}</p>
                         
                         <div class="mt-1.5 text-[8px] uppercase font-bold text-slate-500 tracking-wider flex flex-col gap-0">
