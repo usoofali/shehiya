@@ -42,11 +42,6 @@ const mainNavItems = computed<NavItem[]>(() => {
             icon: ShieldCheck,
         },
         {
-            title: 'Organization Patrons',
-            href: '/patrons',
-            icon: Award,
-        },
-        {
             title: 'Announcements',
             href: '/announcements',
             icon: Megaphone,
@@ -60,6 +55,11 @@ const mainNavItems = computed<NavItem[]>(() => {
     );
 
     if (isSuperAdmin) {
+        items.push({
+            title: 'Organization Patrons',
+            href: '/patrons',
+            icon: Award,
+        });
         items.push({
             title: 'Website Content',
             href: '/admin/content',

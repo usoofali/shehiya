@@ -15,6 +15,10 @@ class PatronController extends Controller
      */
     public function index(Request $request): Response
     {
+        if (! $request->user()->hasRole('Super Administrator')) {
+            abort(403, 'You do not have permission to view Patrons management.');
+        }
+
         $query = Patron::query();
 
         if ($search = $request->input('search')) {
@@ -45,7 +49,7 @@ class PatronController extends Controller
      */
     public function store(Request $request)
     {
-        if (! $request->user()->can('manage esco') && ! $request->user()->hasRole('Super Administrator')) {
+        if (! $request->user()->hasRole('Super Administrator')) {
             abort(403, 'You do not have permission to manage Patrons.');
         }
 
@@ -88,7 +92,7 @@ class PatronController extends Controller
      */
     public function update(Request $request, Patron $patron)
     {
-        if (! $request->user()->can('manage esco') && ! $request->user()->hasRole('Super Administrator')) {
+        if (! $request->user()->hasRole('Super Administrator')) {
             abort(403, 'You do not have permission to manage Patrons.');
         }
 
@@ -135,7 +139,7 @@ class PatronController extends Controller
      */
     public function destroy(Request $request, Patron $patron)
     {
-        if (! $request->user()->can('manage esco') && ! $request->user()->hasRole('Super Administrator')) {
+        if (! $request->user()->hasRole('Super Administrator')) {
             abort(403, 'You do not have permission to manage Patrons.');
         }
 
