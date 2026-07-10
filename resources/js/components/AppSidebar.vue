@@ -6,7 +6,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { type NavItem } from '@/types';
 import { computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Megaphone, ShieldCheck, Users, FileText, Globe } from 'lucide-vue-next';
+import { Award, BookOpen, Folder, LayoutGrid, Megaphone, ShieldCheck, Users, FileText, Globe } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const page = usePage();
@@ -40,6 +40,11 @@ const mainNavItems = computed<NavItem[]>(() => {
             title: 'EXCO Leadership',
             href: '/esco',
             icon: ShieldCheck,
+        },
+        {
+            title: 'Organization Patrons',
+            href: '/patrons',
+            icon: Award,
         },
         {
             title: 'Announcements',

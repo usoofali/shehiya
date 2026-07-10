@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Announcement;
 use App\Models\EscoOfficial;
+use App\Models\Member;
 use App\Models\MovementContent;
+use App\Models\Patron;
 use App\Models\State;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -35,6 +37,8 @@ class WelcomeController extends Controller
 
         $escos = $escoQuery->latest()->limit(50)->get();
 
+        $patrons = Patron::active()->get();
+
         $announcementQuery = Announcement::with(['state', 'lga', 'ward']);
 
         if ($request->filled('state_id') || $request->filled('lga_id') || $request->filled('ward_id')) {
@@ -63,12 +67,17 @@ class WelcomeController extends Controller
 
         $announcements = $announcementQuery->latest()->limit(10)->get();
 
+        $stateMemberCounts = State::has('members')->withCount('members')->orderByDesc('members_count')->get(['id', 'name']);
+
         return Inertia::render('Welcome', [
             'contents' => $contents,
             'states' => $states,
             'escos' => $escos,
+            'patrons' => $patrons,
             'announcements' => $announcements,
             'filters' => $request->only(['state_id', 'lga_id', 'ward_id']),
+            'totalMembers' => Member::count(),
+            'stateMemberCounts' => $stateMemberCounts,
         ]);
     }
 

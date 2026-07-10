@@ -276,8 +276,8 @@ const inputClass = 'mt-1 w-full rounded-xl border border-input bg-background px-
 
         <!-- Create Modal -->
         <Teleport to="body">
-            <div v-if="showCreate" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm" @click.self="showCreate = false">
-                <div class="w-full max-w-lg rounded-3xl border border-border bg-card p-6 shadow-2xl dark:bg-sidebar">
+            <div v-if="showCreate" class="fixed inset-0 z-50 flex min-h-screen items-center justify-center overflow-y-auto bg-black/60 p-3 sm:p-6 backdrop-blur-sm" @click.self="showCreate = false">
+                <div class="my-auto w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl sm:rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-2xl dark:bg-sidebar">
                     <div class="mb-5 flex items-center justify-between">
                         <h2 class="text-lg font-bold text-foreground">Add Coordinator Account</h2>
                         <button @click="showCreate = false" class="rounded-lg p-1.5 hover:bg-muted"><X class="size-5" /></button>
@@ -354,8 +354,8 @@ const inputClass = 'mt-1 w-full rounded-xl border border-input bg-background px-
             </div>
 
             <!-- Edit Modal -->
-            <div v-if="editUser" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm" @click.self="editUser = null">
-                <div class="w-full max-w-md rounded-3xl border border-border bg-card p-6 shadow-2xl dark:bg-sidebar">
+            <div v-if="editUser" class="fixed inset-0 z-50 flex min-h-screen items-center justify-center overflow-y-auto bg-black/60 p-3 sm:p-6 backdrop-blur-sm" @click.self="editUser = null">
+                <div class="my-auto w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl sm:rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-2xl dark:bg-sidebar">
                     <div class="mb-5 flex items-center justify-between">
                         <h2 class="text-lg font-bold text-foreground">Edit: {{ editUser.name }}</h2>
                         <button @click="editUser = null" class="rounded-lg p-1.5 hover:bg-muted"><X class="size-5" /></button>
@@ -410,8 +410,8 @@ const inputClass = 'mt-1 w-full rounded-xl border border-input bg-background px-
             </div>
 
             <!-- Delete Confirmation Modal -->
-            <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-                <div class="w-full max-w-sm rounded-3xl border border-border bg-card p-6 shadow-2xl dark:bg-sidebar">
+            <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex min-h-screen items-center justify-center overflow-y-auto bg-black/60 p-3 sm:p-6 backdrop-blur-sm">
+                <div class="my-auto w-full max-w-sm max-h-[90vh] overflow-y-auto rounded-2xl sm:rounded-3xl border border-border bg-card p-5 sm:p-6 shadow-2xl dark:bg-sidebar">
                     <h2 class="text-lg font-bold text-foreground">Delete Coordinator</h2>
                     <p class="mt-2 text-sm text-muted-foreground">Are you sure you want to delete the coordinator account for <strong>{{ itemToDelete?.name }}</strong>? This action cannot be undone.</p>
                     <div class="mt-6 flex justify-end gap-3">

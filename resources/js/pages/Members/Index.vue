@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { computed, reactive, watch } from 'vue';
-import { Filter, Plus, Search, Users } from 'lucide-vue-next';
+import { Filter, Search, Users } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
@@ -108,14 +108,6 @@ watch(() => filterForm.lga_id, () => {
                     </h1>
                     <p class="mt-1 text-sm text-muted-foreground">Search, filter, and manage verified and pending members.</p>
                 </div>
-                <div>
-                    <Link
-                        href="/members/create"
-                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 dark:bg-emerald-500 dark:hover:bg-emerald-400"
-                    >
-                        <Plus class="size-4" /> Register New Member
-                    </Link>
-                </div>
             </div>
 
             <!-- Filters Bar -->
@@ -194,36 +186,36 @@ watch(() => filterForm.lga_id, () => {
                     <table class="w-full text-left text-sm">
                         <thead class="border-b border-border bg-muted/50 text-xs uppercase text-muted-foreground">
                             <tr>
-                                <th class="px-6 py-4 font-semibold">Membership #</th>
-                                <th class="px-6 py-4 font-semibold">Member Name</th>
-                                <th class="px-6 py-4 font-semibold">Contact</th>
-                                <th class="px-6 py-4 font-semibold">Jurisdiction</th>
-                                <th class="px-6 py-4 font-semibold">Referrals</th>
-                                <th class="px-6 py-4 font-semibold">Status</th>
-                                <th class="px-6 py-4 text-right font-semibold">Actions</th>
+                                <th class="px-3.5 py-3.5 font-semibold">Membership #</th>
+                                <th class="px-3.5 py-3.5 font-semibold">Member Name</th>
+                                <th class="px-3.5 py-3.5 font-semibold">Contact</th>
+                                <th class="px-3.5 py-3.5 font-semibold">Jurisdiction</th>
+                                <th class="px-3.5 py-3.5 font-semibold">Referrals</th>
+                                <th class="px-3.5 py-3.5 font-semibold">Status</th>
+                                <th class="px-3.5 py-3.5 text-right font-semibold">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-border">
                             <tr v-if="members.data.length === 0">
-                                <td colSpan="6" class="p-8 text-center text-muted-foreground">No members found matching the specified filters.</td>
+                                <td colSpan="7" class="p-8 text-center text-muted-foreground">No members found matching the specified filters.</td>
                             </tr>
                             <tr v-for="member in members.data" :key="member.id" class="transition hover:bg-muted/50">
-                                <td class="whitespace-nowrap px-6 py-4 font-mono font-medium text-foreground">{{ member.membership_number }}</td>
-                                <td class="px-6 py-4">
-                                    <div class="font-medium text-foreground">{{ member.first_name }} {{ member.last_name }}</div>
-                                    <div class="text-xs text-muted-foreground">{{ member.gender }} • {{ member.occupation || 'N/A' }}</div>
+                                <td class="whitespace-nowrap px-3.5 py-3.5 font-mono font-medium text-foreground">{{ member.membership_number }}</td>
+                                <td class="max-w-[140px] sm:max-w-[180px] px-3.5 py-3.5">
+                                    <div class="truncate font-medium text-foreground" :title="`${member.first_name} ${member.last_name}`">{{ member.first_name }} {{ member.last_name }}</div>
+                                    <div class="truncate text-xs text-muted-foreground" :title="`${member.gender} • ${member.occupation || 'N/A'}`">{{ member.gender }} • {{ member.occupation || 'N/A' }}</div>
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-muted-foreground">{{ member.phone }}</td>
-                                <td class="px-6 py-4 text-muted-foreground">
-                                    <div>{{ member.state?.name }}</div>
-                                    <div class="text-xs">{{ member.lga?.name }} • {{ member.ward?.name }}</div>
-                                    <div v-if="member.polling_unit" class="mt-1">
-                                        <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
+                                <td class="whitespace-nowrap px-3.5 py-3.5 text-muted-foreground">{{ member.phone }}</td>
+                                <td class="max-w-[150px] sm:max-w-[190px] px-3.5 py-3.5 text-muted-foreground">
+                                    <div class="truncate font-medium text-foreground" :title="member.state?.name">{{ member.state?.name }}</div>
+                                    <div class="truncate text-xs" :title="`${member.lga?.name} • ${member.ward?.name}`">{{ member.lga?.name }} • {{ member.ward?.name }}</div>
+                                    <div v-if="member.polling_unit" class="mt-1 truncate">
+                                        <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 truncate max-w-full" :title="`PU: ${member.polling_unit.code ? `${member.polling_unit.code} - ` : ''}${member.polling_unit.name}`">
                                             PU: {{ member.polling_unit.code ? `${member.polling_unit.code} - ` : '' }}{{ member.polling_unit.name }}
                                         </span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-3.5 py-3.5">
                                     <div class="font-bold text-foreground">
                                         <span class="text-emerald-600 dark:text-emerald-400">{{ member.verified_referrals_count ?? 0 }}</span> 
                                         <span class="text-muted-foreground font-normal text-xs"> / {{ member.referrals_count ?? 0 }}</span>
@@ -240,7 +232,7 @@ watch(() => filterForm.lga_id, () => {
                                         {{ member.referral_badge !== 'None' ? member.referral_badge : '' }}
                                     </div>
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4">
+                                <td class="whitespace-nowrap px-3.5 py-3.5">
                                     <span
                                         class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize"
                                         :class="{
@@ -252,12 +244,16 @@ watch(() => filterForm.lga_id, () => {
                                         {{ member.status }}
                                     </span>
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-right">
+                                <td class="whitespace-nowrap px-3.5 py-3.5 text-right">
                                     <Link
                                         :href="`/members/${member.id}`"
-                                        class="inline-flex items-center rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
+                                        class="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold shadow-sm transition"
+                                        :class="{
+                                            'bg-gradient-to-r from-amber-600 to-emerald-600 text-white hover:from-amber-500 hover:to-emerald-500': member.status === 'pending',
+                                            'border border-border bg-card text-foreground hover:bg-muted': member.status !== 'pending'
+                                        }"
                                     >
-                                        View Profile
+                                        {{ member.status === 'pending' ? 'Verify Profile' : 'View Profile' }}
                                     </Link>
                                 </td>
                             </tr>

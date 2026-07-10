@@ -302,8 +302,8 @@ const submitOfficial = () => {
         </div>
 
         <!-- Add Modal -->
-        <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-            <div class="w-full max-w-2xl rounded-3xl bg-background p-6 shadow-2xl sm:p-8">
+        <div v-if="showAddModal" class="fixed inset-0 z-50 flex min-h-screen items-center justify-center overflow-y-auto bg-black/50 p-3 sm:p-6 backdrop-blur-sm">
+            <div class="my-auto w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl sm:rounded-3xl bg-background p-4 sm:p-8 shadow-2xl">
                 <div class="flex items-center justify-between">
                     <h2 class="text-xl font-bold text-foreground">Appoint EXCO Official</h2>
                     <button @click="showAddModal = false" class="rounded-full p-2 text-muted-foreground hover:bg-muted"><X class="size-5" /></button>
@@ -396,8 +396,8 @@ const submitOfficial = () => {
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-            <div class="w-full max-w-sm rounded-3xl bg-background p-6 shadow-2xl">
+        <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex min-h-screen items-center justify-center overflow-y-auto bg-black/50 p-3 sm:p-6 backdrop-blur-sm">
+            <div class="my-auto w-full max-w-sm max-h-[90vh] overflow-y-auto rounded-2xl sm:rounded-3xl bg-background p-5 sm:p-6 shadow-2xl">
                 <h2 class="text-lg font-bold text-foreground">Remove Official</h2>
                 <p class="mt-2 text-sm text-muted-foreground">Are you sure you want to remove this EXCO official? This action cannot be undone.</p>
                 <div class="mt-6 flex justify-end gap-3">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
-import { Users, MapPin, Megaphone, Bell, Calendar, Award, ShieldCheck, ChevronRight, Search, Building2, UserCheck } from 'lucide-vue-next';
+import { ChevronDown, Crown, Users, MapPin, Megaphone, Bell, Calendar, Award, ShieldCheck, ChevronRight, Search, Building2, UserCheck } from 'lucide-vue-next';
 
 const props = defineProps<{
     contents: Record<string, { key: string; title: string; body: string | null; image_url: string | null }>;
@@ -27,7 +27,29 @@ const props = defineProps<{
         ward?: { name: string };
     }>;
     filters?: { state_id?: string | number; lga_id?: string | number; ward_id?: string | number };
+    totalMembers?: number;
+    patrons: Array<{
+        id: number;
+        name: string;
+        title: string;
+        category: 'Grand Patron' | 'Patron' | 'Royal Father';
+        photo_path?: string;
+        order_index: number;
+        is_active: boolean;
+    }>;
+    stateMemberCounts?: Array<{
+        id: number;
+        name: string;
+        members_count: number;
+    }>;
 }>();
+
+const showStateCounts = ref(false);
+const activePatronTab = ref('All');
+const grandPatrons = computed(() => props.patrons?.filter(p => p.category === 'Grand Patron') || []);
+const generalPatrons = computed(() => props.patrons?.filter(p => p.category === 'Patron') || []);
+const royalFathers = computed(() => props.patrons?.filter(p => p.category === 'Royal Father') || []);
+const activeStateMemberCounts = computed(() => (props.stateMemberCounts || []).filter(s => (s.members_count || 0) > 0));
 
 const selectedState = ref(props.filters?.state_id || '');
 const selectedLga = ref(props.filters?.lga_id || '');
@@ -199,6 +221,60 @@ const missionPoints = [
             </div>
         </section>
 
+        <!-- Total Members Counter Section -->
+        <section class="border-y border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-emerald-500/10 to-amber-500/10 py-12 dark:border-amber-500/10 dark:bg-slate-900/80">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col gap-6 rounded-3xl border border-amber-500/20 bg-white/80 p-8 shadow-xl backdrop-blur-md sm:p-10 dark:border-slate-800 dark:bg-slate-900/90">
+                    <!-- Main Counter Row -->
+                    <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
+                        <div class="flex items-center gap-5">
+                            <div class="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-emerald-600 text-white shadow-lg shadow-amber-500/20">
+                                <Users class="size-8" />
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Organization Reach &amp; Mobilization</div>
+                                <h3 class="mt-1 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl dark:text-white">Total Registered Members</h3>
+                            </div>
+                        </div>
+                        <div class="text-center sm:text-right">
+                            <div class="text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-emerald-600 sm:text-6xl">
+                                {{ (totalMembers || 0).toLocaleString() }}
+                            </div>
+                            <div class="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">Verified &amp; Registered Grassroots Supporters Across Nigeria</div>
+                        </div>
+                    </div>
+
+                    <!-- Dropdown Toggle & Breakdown Grid inside Card -->
+                    <div v-if="activeStateMemberCounts.length > 0" class="border-t border-amber-500/15 pt-6 dark:border-slate-800 flex flex-col items-center">
+                        <button
+                            @click="showStateCounts = !showStateCounts"
+                            class="inline-flex items-center gap-2 rounded-2xl border border-amber-500/30 bg-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-800 shadow-sm transition hover:bg-amber-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                        >
+                            <span>{{ showStateCounts ? 'Hide State-Wise Breakdown' : 'Show State-Wise Registration Breakdown' }}</span>
+                            <ChevronDown class="size-4 transition-transform duration-200" :class="{ 'rotate-180': showStateCounts }" />
+                        </button>
+
+                        <!-- Collapsible State Breakdown Grid -->
+                        <div v-if="showStateCounts" class="mt-6 w-full rounded-2xl border border-amber-500/20 bg-slate-50/60 p-6 dark:border-slate-800 dark:bg-slate-950/40 transition-all">
+                            <h4 class="mb-4 text-center text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                                State-By-State Member Registrations
+                            </h4>
+                            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                                <div
+                                    v-for="state in activeStateMemberCounts"
+                                    :key="state.id"
+                                    class="flex flex-col items-center justify-center rounded-xl border border-slate-200/80 bg-white p-3.5 text-center shadow-xs transition hover:border-amber-500/50 hover:bg-amber-50/50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-amber-500/30"
+                                >
+                                    <span class="text-xs font-bold text-slate-600 dark:text-slate-400 truncate w-full" :title="state.name">{{ state.name }}</span>
+                                    <span class="mt-1 text-lg font-black text-amber-600 dark:text-amber-400">{{ (state.members_count || 0).toLocaleString() }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- About Support Organization Section -->
         <section class="border-y border-slate-200/80 bg-white py-20 dark:border-slate-800/80 dark:bg-slate-900/50">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -285,6 +361,137 @@ const missionPoints = [
                             <div class="mt-auto pt-6 flex items-center justify-between border-t border-slate-100 text-xs font-semibold text-slate-500 dark:border-slate-800">
                                 <span>{{ notice.state ? notice.state.name : 'National Broadcast' }}</span>
                                 <Link :href="route('announcements.show', notice.id)" class="text-xs font-bold text-amber-600 hover:text-amber-500 hover:underline dark:text-amber-400">Read Notice &rarr;</Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Patrons & Royal Leadership Section -->
+        <section v-if="patrons && patrons.length > 0" id="patrons-leadership" class="border-t border-slate-200/80 bg-white py-20 dark:border-slate-800/80 dark:bg-slate-900/50">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <div class="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                        <Crown class="size-4" /> Revered Leadership
+                    </div>
+                    <h2 class="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">Patrons & Royal Leadership</h2>
+                    <p class="mx-auto mt-3 max-w-2xl text-base text-slate-600 dark:text-slate-400">
+                        Meet the distinguished Grand Patrons, Organization Patrons, and Royal Fathers guiding our vision and strategic mission.
+                    </p>
+                </div>
+
+                <!-- Interactive Category Selector Tabs -->
+                <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+                    <button
+                        @click="activePatronTab = 'All'"
+                        class="rounded-2xl px-5 py-2.5 text-sm font-bold transition duration-200 shadow-sm"
+                        :class="activePatronTab === 'All' ? 'bg-amber-600 text-white' : 'border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300'"
+                    >
+                        All Patrons
+                    </button>
+                    <button
+                        @click="activePatronTab = 'Grand Patron'"
+                        class="rounded-2xl px-5 py-2.5 text-sm font-bold transition duration-200 shadow-sm flex items-center gap-1.5"
+                        :class="activePatronTab === 'Grand Patron' ? 'bg-amber-600 text-white' : 'border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300'"
+                    >
+                        <Crown class="size-4 text-amber-500" :class="{ 'text-white': activePatronTab === 'Grand Patron' }" /> Grand Patron
+                    </button>
+                    <button
+                        @click="activePatronTab = 'Patron'"
+                        class="rounded-2xl px-5 py-2.5 text-sm font-bold transition duration-200 shadow-sm flex items-center gap-1.5"
+                        :class="activePatronTab === 'Patron' ? 'bg-amber-600 text-white' : 'border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300'"
+                    >
+                        <Award class="size-4 text-emerald-500" :class="{ 'text-white': activePatronTab === 'Patron' }" /> Patrons
+                    </button>
+                    <button
+                        @click="activePatronTab = 'Royal Father'"
+                        class="rounded-2xl px-5 py-2.5 text-sm font-bold transition duration-200 shadow-sm flex items-center gap-1.5"
+                        :class="activePatronTab === 'Royal Father' ? 'bg-amber-600 text-white' : 'border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300'"
+                    >
+                        <Crown class="size-4 text-purple-500" :class="{ 'text-white': activePatronTab === 'Royal Father' }" /> Royal Fathers
+                    </button>
+                </div>
+
+                <!-- Hierarchical Subsections Display -->
+                <div class="mt-14 space-y-16">
+                    <!-- Grand Patron Subsection (Always shown first) -->
+                    <div v-if="(activePatronTab === 'All' || activePatronTab === 'Grand Patron') && grandPatrons.length > 0">
+                        <div class="mb-8 flex items-center gap-3 border-b-2 border-amber-500/30 pb-3">
+                            <Crown class="size-6 text-amber-500" />
+                            <h3 class="text-2xl font-black text-slate-900 tracking-tight dark:text-white">Grand Patron</h3>
+                        </div>
+                        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            <div
+                                v-for="patron in grandPatrons"
+                                :key="patron.id"
+                                class="group relative flex flex-col items-center overflow-hidden rounded-3xl border border-amber-500/30 bg-gradient-to-b from-amber-50/50 to-white p-8 text-center shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl dark:from-amber-950/20 dark:to-slate-900"
+                            >
+                                <div class="relative mb-5 size-36 overflow-hidden rounded-full border-4 border-amber-500 shadow-md">
+                                    <img v-if="patron.photo_path" :src="`/storage/${patron.photo_path}`" :alt="patron.name" class="size-full object-cover" />
+                                    <div v-else class="flex size-full items-center justify-center bg-amber-100 text-3xl font-extrabold text-amber-800 dark:bg-amber-900/50 dark:text-amber-200">
+                                        {{ patron.name[0] }}
+                                    </div>
+                                </div>
+                                <span class="mb-2 inline-flex items-center gap-1 rounded-full bg-amber-100 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                                    <Crown class="size-3.5" /> Grand Patron
+                                </span>
+                                <h4 class="mt-1 text-xl font-black text-slate-900 dark:text-white">{{ patron.name }}</h4>
+                                <p class="mt-1.5 text-sm font-semibold text-slate-600 dark:text-slate-300">{{ patron.title }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Patrons Subsection -->
+                    <div v-if="(activePatronTab === 'All' || activePatronTab === 'Patron') && generalPatrons.length > 0">
+                        <div class="mb-8 flex items-center gap-3 border-b-2 border-emerald-500/30 pb-3">
+                            <Award class="size-6 text-emerald-600 dark:text-emerald-400" />
+                            <h3 class="text-2xl font-black text-slate-900 tracking-tight dark:text-white">Organization Patrons</h3>
+                        </div>
+                        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            <div
+                                v-for="patron in generalPatrons"
+                                :key="patron.id"
+                                class="group relative flex flex-col items-center overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
+                            >
+                                <div class="relative mb-4 size-28 overflow-hidden rounded-full border-4 border-emerald-500/20 shadow-sm">
+                                    <img v-if="patron.photo_path" :src="`/storage/${patron.photo_path}`" :alt="patron.name" class="size-full object-cover" />
+                                    <div v-else class="flex size-full items-center justify-center bg-emerald-100 text-2xl font-bold text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-200">
+                                        {{ patron.name[0] }}
+                                    </div>
+                                </div>
+                                <span class="mb-2 inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-0.5 text-[11px] font-bold uppercase tracking-wider text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
+                                    <Award class="size-3" /> Patron
+                                </span>
+                                <h4 class="mt-1 text-lg font-bold text-slate-900 dark:text-white">{{ patron.name }}</h4>
+                                <p class="mt-1 text-xs font-medium text-slate-600 dark:text-slate-400">{{ patron.title }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Royal Fathers Subsection -->
+                    <div v-if="(activePatronTab === 'All' || activePatronTab === 'Royal Father') && royalFathers.length > 0">
+                        <div class="mb-8 flex items-center gap-3 border-b-2 border-purple-500/30 pb-3">
+                            <Crown class="size-6 text-purple-600 dark:text-purple-400" />
+                            <h3 class="text-2xl font-black text-slate-900 tracking-tight dark:text-white">Royal Fathers</h3>
+                        </div>
+                        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            <div
+                                v-for="patron in royalFathers"
+                                :key="patron.id"
+                                class="group relative flex flex-col items-center overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
+                            >
+                                <div class="relative mb-4 size-28 overflow-hidden rounded-full border-4 border-purple-500/20 shadow-sm">
+                                    <img v-if="patron.photo_path" :src="`/storage/${patron.photo_path}`" :alt="patron.name" class="size-full object-cover" />
+                                    <div v-else class="flex size-full items-center justify-center bg-purple-100 text-2xl font-bold text-purple-800 dark:bg-purple-900/50 dark:text-purple-200">
+                                        {{ patron.name[0] }}
+                                    </div>
+                                </div>
+                                <span class="mb-2 inline-flex items-center gap-1 rounded-full bg-purple-100 px-3 py-0.5 text-[11px] font-bold uppercase tracking-wider text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                                    <Crown class="size-3" /> Royal Father
+                                </span>
+                                <h4 class="mt-1 text-lg font-bold text-slate-900 dark:text-white">{{ patron.name }}</h4>
+                                <p class="mt-1 text-xs font-medium text-slate-600 dark:text-slate-400">{{ patron.title }}</p>
                             </div>
                         </div>
                     </div>

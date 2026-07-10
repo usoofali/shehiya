@@ -8,6 +8,7 @@ use App\Http\Controllers\EscoController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberVerificationController;
 use App\Http\Controllers\MovementContentController;
+use App\Http\Controllers\PatronController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -40,6 +41,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // EXCO Leadership
     Route::resource('esco', EscoController::class)->only(['index', 'store', 'destroy']);
+
+    // Organization Patrons & Royal Leadership
+    Route::resource('patrons', PatronController::class)->only(['index', 'store', 'update', 'destroy']);
 
     // Announcements
     Route::resource('announcements', AnnouncementController::class)->only(['index', 'store', 'update', 'destroy']);
