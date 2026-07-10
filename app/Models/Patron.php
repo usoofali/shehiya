@@ -30,7 +30,7 @@ class Patron extends Model
     public function scopeActive(Builder $query): void
     {
         $query->where('is_active', true)
-            ->orderByRaw("FIELD(category, 'Grand Patron', 'Patron', 'Royal Father')")
+            ->orderByRaw("FIELD(category, 'Grand Patron', 'Patron', 'Royal Father', 'Special Adviser')")
             ->orderBy('order_index')
             ->latest();
     }

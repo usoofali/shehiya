@@ -32,7 +32,7 @@ class PatronController extends Controller
             $query->where('category', $category);
         }
 
-        $patrons = $query->orderByRaw("FIELD(category, 'Grand Patron', 'Patron', 'Royal Father')")
+        $patrons = $query->orderByRaw("FIELD(category, 'Grand Patron', 'Patron', 'Royal Father', 'Special Adviser')")
             ->orderBy('order_index')
             ->latest()
             ->paginate(15)
@@ -56,7 +56,7 @@ class PatronController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'title' => ['required', 'string', 'max:255'],
-            'category' => ['required', 'in:Grand Patron,Patron,Royal Father'],
+            'category' => ['required', 'in:Grand Patron,Patron,Royal Father,Special Adviser'],
             'photo' => ['nullable', 'string'],
             'order_index' => ['nullable', 'integer'],
             'is_active' => ['nullable', 'boolean'],
@@ -99,7 +99,7 @@ class PatronController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'title' => ['required', 'string', 'max:255'],
-            'category' => ['required', 'in:Grand Patron,Patron,Royal Father'],
+            'category' => ['required', 'in:Grand Patron,Patron,Royal Father,Special Adviser'],
             'photo' => ['nullable', 'string'],
             'order_index' => ['nullable', 'integer'],
             'is_active' => ['nullable', 'boolean'],

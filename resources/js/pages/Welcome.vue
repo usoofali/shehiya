@@ -49,6 +49,7 @@ const activePatronTab = ref('All');
 const grandPatrons = computed(() => props.patrons?.filter(p => p.category === 'Grand Patron') || []);
 const generalPatrons = computed(() => props.patrons?.filter(p => p.category === 'Patron') || []);
 const royalFathers = computed(() => props.patrons?.filter(p => p.category === 'Royal Father') || []);
+const specialAdvisers = computed(() => props.patrons?.filter(p => p.category === 'Special Adviser') || []);
 const activeStateMemberCounts = computed(() => (props.stateMemberCounts || []).filter(s => (s.members_count || 0) > 0));
 
 const selectedState = ref(props.filters?.state_id || '');
@@ -411,6 +412,13 @@ const missionPoints = [
                     >
                         <Crown class="size-4 text-purple-500" :class="{ 'text-white': activePatronTab === 'Royal Father' }" /> Royal Fathers
                     </button>
+                    <button
+                        @click="activePatronTab = 'Special Adviser'"
+                        class="rounded-2xl px-5 py-2.5 text-sm font-bold transition duration-200 shadow-sm flex items-center gap-1.5"
+                        :class="activePatronTab === 'Special Adviser' ? 'bg-amber-600 text-white' : 'border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300'"
+                    >
+                        <Award class="size-4 text-blue-500" :class="{ 'text-white': activePatronTab === 'Special Adviser' }" /> Special Advisers
+                    </button>
                 </div>
 
                 <!-- Hierarchical Subsections Display -->
@@ -489,6 +497,33 @@ const missionPoints = [
                                 </div>
                                 <span class="mb-2 inline-flex items-center gap-1 rounded-full bg-purple-100 px-3 py-0.5 text-[11px] font-bold uppercase tracking-wider text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
                                     <Crown class="size-3" /> Royal Father
+                                </span>
+                                <h4 class="mt-1 text-lg font-bold text-slate-900 dark:text-white">{{ patron.name }}</h4>
+                                <p class="mt-1 text-xs font-medium text-slate-600 dark:text-slate-400">{{ patron.title }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Special Advisers Subsection -->
+                    <div v-if="(activePatronTab === 'All' || activePatronTab === 'Special Adviser') && specialAdvisers.length > 0">
+                        <div class="mb-8 flex items-center gap-3 border-b-2 border-blue-500/30 pb-3">
+                            <Award class="size-6 text-blue-600 dark:text-blue-400" />
+                            <h3 class="text-2xl font-black text-slate-900 tracking-tight dark:text-white">Special Advisers</h3>
+                        </div>
+                        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            <div
+                                v-for="patron in specialAdvisers"
+                                :key="patron.id"
+                                class="group relative flex flex-col items-center overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
+                            >
+                                <div class="relative mb-4 size-28 overflow-hidden rounded-full border-4 border-blue-500/20 shadow-sm">
+                                    <img v-if="patron.photo_path" :src="`/storage/${patron.photo_path}`" :alt="patron.name" class="size-full object-cover" />
+                                    <div v-else class="flex size-full items-center justify-center bg-blue-100 text-2xl font-bold text-blue-800 dark:bg-blue-900/50 dark:text-blue-200">
+                                        {{ patron.name[0] }}
+                                    </div>
+                                </div>
+                                <span class="mb-2 inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-0.5 text-[11px] font-bold uppercase tracking-wider text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                                    <Award class="size-3" /> Special Adviser
                                 </span>
                                 <h4 class="mt-1 text-lg font-bold text-slate-900 dark:text-white">{{ patron.name }}</h4>
                                 <p class="mt-1 text-xs font-medium text-slate-600 dark:text-slate-400">{{ patron.title }}</p>

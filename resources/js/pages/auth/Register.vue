@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
-import { Award, CheckCircle, ChevronRight, LoaderCircle, ShieldCheck, UserPlus, MapPin, Building2 } from 'lucide-vue-next';
+import { Award, CheckCircle, ChevronRight, LoaderCircle, ShieldCheck, UserPlus, MapPin, Building2, Upload, X } from 'lucide-vue-next';
 
 const props = defineProps<{
     states: Array<{
@@ -114,6 +114,12 @@ watch(() => form.ward_id, async (wardId) => {
 });
 
 const submit = () => {
+    form.clearErrors();
+    if (!form.photo) {
+        form.setError('photo', 'Passport photograph is required. Please choose or capture your portrait photo before submitting.');
+        document.getElementById('photo-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
     form.post(route('register'));
 };
 
@@ -205,19 +211,6 @@ const selectClass = 'mt-1 w-full rounded-xl border border-slate-300 bg-white px-
                             <input v-model="form.occupation" type="text" :class="inputClass" placeholder="Civil Servant, Farmer, Trader, etc." />
                             <p v-if="form.errors.occupation" class="mt-1 text-xs text-rose-500">{{ form.errors.occupation }}</p>
                         </div>
-                        <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Profile Photo <span class="text-xs text-slate-400">(Optional - Max 50KB, will be cropped to square)</span></label>
-                            <div class="mt-2 flex items-center gap-4">
-                                <div v-if="form.photo" class="size-16 shrink-0 overflow-hidden rounded-full border border-slate-200 dark:border-slate-700">
-                                    <img :src="form.photo" alt="Profile Preview" class="h-full w-full object-cover" />
-                                </div>
-                                <div v-else class="flex size-16 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800">
-                                    <UserPlus class="size-6" />
-                                </div>
-                                <input type="file" accept="image/*" @change="handlePhotoUpload" class="block w-full text-sm text-slate-500 file:mr-4 file:rounded-xl file:border-0 file:bg-amber-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-amber-700 hover:file:bg-amber-100 dark:file:bg-amber-900/30 dark:file:text-amber-400" />
-                            </div>
-                            <p v-if="form.errors.photo" class="mt-1 text-xs text-rose-500">{{ form.errors.photo }}</p>
-                        </div>
                     </div>
                 </div>
 
@@ -271,6 +264,57 @@ const selectClass = 'mt-1 w-full rounded-xl border border-slate-300 bg-white px-
                             <p v-if="form.errors.polling_unit_id" class="mt-1 text-xs text-rose-500">{{ form.errors.polling_unit_id }}</p>
                         </div>
                     </div>
+                </div>
+
+                <!-- Photograph Section -->
+                <div id="photo-section" class="border-t border-slate-200 pt-8 dark:border-slate-800">
+                    <h2 class="flex items-center gap-1.5 text-base font-bold text-slate-900 dark:text-white">
+                        Passport Photograph <span class="text-xs font-bold text-rose-500">* Required</span>
+                    </h2>
+                    <p class="mt-0.5 text-xs text-slate-500">Upload a clear passport portrait photograph (Required — Max 5MB, JPG/PNG supported). A photo is required for ID badge generation.</p>
+
+                    <div class="mt-5">
+                        <div v-if="!form.photo" class="relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/60 px-6 py-8 text-center transition hover:border-amber-500 hover:bg-amber-50/20 dark:border-slate-700 dark:bg-slate-800/40 dark:hover:border-amber-500/80">
+                            <div class="flex size-14 items-center justify-center rounded-full bg-amber-50 text-amber-600 shadow-sm dark:bg-amber-950/50 dark:text-amber-400">
+                                <Upload class="size-6" />
+                            </div>
+                            <h3 class="mt-4 text-sm font-semibold text-slate-900 dark:text-white">Click to choose photo or drag &amp; drop</h3>
+                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Portrait or square photo (PNG, JPG up to 5MB). Will be automatically cropped &amp; optimized.</p>
+                            <label class="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-amber-600 to-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-600/10 transition hover:from-amber-500 hover:to-emerald-500">
+                                <Upload class="size-4" /> Browse Photo
+                                <input type="file" accept="image/*" @change="handlePhotoUpload" class="hidden" />
+                            </label>
+                        </div>
+
+                        <div v-else class="flex flex-col items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-5 dark:border-slate-800 dark:bg-slate-800/50 sm:flex-row">
+                            <div class="flex items-center gap-4">
+                                <div class="size-20 shrink-0 overflow-hidden rounded-2xl border-2 border-amber-500 bg-white shadow-md dark:bg-slate-900">
+                                    <img :src="form.photo" alt="Profile Preview" class="h-full w-full object-cover" />
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white">Photograph Ready</h4>
+                                    <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Cropped to high-quality square portrait.</p>
+                                    <span class="mt-1.5 inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300">
+                                        <CheckCircle class="size-3" /> Optimized for ID Tag
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="cursor-pointer rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
+                                    Change Photo
+                                    <input type="file" accept="image/*" @change="handlePhotoUpload" class="hidden" />
+                                </label>
+                                <button
+                                    type="button"
+                                    @click="form.photo = ''"
+                                    class="inline-flex items-center gap-1 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-950/80"
+                                >
+                                    <X class="size-3.5" /> Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <p v-if="form.errors.photo" class="mt-2 text-xs text-rose-500">{{ form.errors.photo }}</p>
                 </div>
 
                 <!-- Notice -->

@@ -16,7 +16,7 @@ const props = defineProps<{
             id: number;
             name: string;
             title: string;
-            category: 'Grand Patron' | 'Patron' | 'Royal Father';
+            category: 'Grand Patron' | 'Patron' | 'Royal Father' | 'Special Adviser';
             photo_path?: string;
             order_index: number;
             is_active: boolean;
@@ -59,7 +59,7 @@ const itemToDelete = ref<number | null>(null);
 const form = useForm({
     name: '',
     title: '',
-    category: 'Patron' as 'Grand Patron' | 'Patron' | 'Royal Father',
+    category: 'Patron' as 'Grand Patron' | 'Patron' | 'Royal Father' | 'Special Adviser',
     photo: null as string | null,
     order_index: 0,
     is_active: true,
@@ -203,6 +203,13 @@ const deletePatron = () => {
                     >
                         Royal Fathers
                     </button>
+                    <button
+                        @click="categoryFilter = 'Special Adviser'"
+                        class="rounded-xl px-3.5 py-1.5 text-xs font-semibold transition"
+                        :class="categoryFilter === 'Special Adviser' ? 'bg-amber-600 text-white shadow-sm' : 'border border-border bg-background text-muted-foreground hover:bg-muted'"
+                    >
+                        Special Advisers
+                    </button>
                 </div>
 
                 <div class="relative w-full sm:w-72">
@@ -256,6 +263,7 @@ const deletePatron = () => {
                             'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300': patron.category === 'Grand Patron',
                             'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300': patron.category === 'Patron',
                             'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300': patron.category === 'Royal Father',
+                            'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': patron.category === 'Special Adviser',
                         }"
                     >
                         <Crown v-if="patron.category === 'Grand Patron'" class="size-3" />
@@ -315,6 +323,7 @@ const deletePatron = () => {
                                 <option value="Grand Patron">Grand Patron</option>
                                 <option value="Patron">Patron</option>
                                 <option value="Royal Father">Royal Father</option>
+                                <option value="Special Adviser">Special Adviser</option>
                             </select>
                         </div>
 

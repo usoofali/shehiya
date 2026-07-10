@@ -56,12 +56,14 @@ class RegisteredUserController extends Controller
             'lga_id' => ['required', 'exists:lgas,id'],
             'ward_id' => ['required', 'exists:wards,id'],
             'polling_unit_id' => ['nullable', 'exists:polling_units,id'],
-            'photo' => ['nullable', 'string'],
+            'photo' => ['required'],
             'referral_code' => ['nullable', 'string', 'size:8'],
         ]);
 
         $photoPath = null;
-        if (! empty($validated['photo'])) {
+        if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+            $photoPath = $request->file('photo')->store('members/photos', 'public');
+        } elseif (! empty($validated['photo']) && is_string($validated['photo'])) {
             $imageParts = explode(';base64,', $validated['photo']);
             if (count($imageParts) == 2) {
                 $imageTypeAux = explode('image/', $imageParts[0]);
@@ -71,6 +73,10 @@ class RegisteredUserController extends Controller
                 Storage::disk('public')->put('members/photos/'.$fileName, $imageBase64);
                 $photoPath = 'members/photos/'.$fileName;
             }
+        }
+
+        if (empty($photoPath)) {
+            return back()->withErrors(['photo' => 'A valid passport photograph is required. Please choose or capture your portrait photo before submitting.'])->withInput();
         }
 
         $latestId = Member::max('id') ?? 0;
