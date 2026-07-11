@@ -73,7 +73,14 @@ const availableWards = computed(() => {
 });
 
 const applyFilters = () => {
-    router.get('/members', { ...filterForm }, { preserveState: true, replace: true });
+    const params: Record<string, any> = {};
+    if (filterForm.search) params.search = filterForm.search;
+    if (filterForm.state_id) params.state_id = filterForm.state_id;
+    if (filterForm.lga_id) params.lga_id = filterForm.lga_id;
+    if (filterForm.ward_id) params.ward_id = filterForm.ward_id;
+    if (filterForm.status) params.status = filterForm.status;
+
+    router.get('/members', params, { preserveState: true, replace: true });
 };
 
 const resetFilters = () => {
@@ -85,13 +92,23 @@ const resetFilters = () => {
     applyFilters();
 };
 
+watch(() => filterForm.status, () => {
+    applyFilters();
+});
+
 watch(() => filterForm.state_id, () => {
     filterForm.lga_id = '';
     filterForm.ward_id = '';
+    applyFilters();
 });
 
 watch(() => filterForm.lga_id, () => {
     filterForm.ward_id = '';
+    applyFilters();
+});
+
+watch(() => filterForm.ward_id, () => {
+    applyFilters();
 });
 
 const page = usePage();
