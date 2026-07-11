@@ -36,6 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Member Directory & Registration
+    Route::post('members/bulk-verify', [MemberVerificationController::class, 'bulkStore'])->name('members.bulk-verify');
     Route::resource('members', MemberController::class)->only(['index', 'create', 'store', 'show']);
     Route::post('members/{member}/verify', [MemberVerificationController::class, 'store'])->name('members.verify');
 

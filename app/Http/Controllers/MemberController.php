@@ -52,6 +52,10 @@ class MemberController extends Controller
             $query->where('status', $status);
         }
 
+        if ($request->input('get_all_ids') === '1') {
+            return response()->json($query->pluck('id'));
+        }
+
         $members = $query->latest('registered_at')->paginate(15)->withQueryString();
 
         return Inertia::render('Members/Index', [
