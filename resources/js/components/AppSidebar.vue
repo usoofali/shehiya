@@ -81,6 +81,11 @@ const mainNavItems = computed<NavItem[]>(() => {
             href: '/admin/roles',
             icon: ShieldCheck,
         });
+        items.push({
+            title: 'EXCO Positions',
+            href: '/admin/positions',
+            icon: Award,
+        });
     }
 
     return items;

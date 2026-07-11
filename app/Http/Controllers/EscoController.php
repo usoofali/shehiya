@@ -105,6 +105,65 @@ class EscoController extends Controller
         return back()->with('success', 'EXCO official added successfully.');
     }
 
+    public function update(Request $request, EscoOfficial $esco)
+    {
+        if (! $request->user()->can('manage esco')) {
+            abort(403, 'You do not have permission to manage EXCO officials.');
+        }
+
+        if (! EscoOfficial::accessibleBy($request->user())->where('id', $esco->id)->exists()) {
+            abort(403, 'Unauthorized jurisdiction access.');
+        }
+
+        $validated = $request->validate([
+            'full_name' => ['required', 'string', 'max:255'],
+            'position_id' => ['required', 'exists:positions,id'],
+            'phone' => ['required', 'string', 'max:20'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'photo' => ['nullable', 'string'],
+            'state_id' => ['nullable', 'exists:states,id'],
+            'lga_id' => ['nullable', 'exists:lgas,id'],
+            'ward_id' => ['nullable', 'exists:wards,id'],
+            'polling_unit_id' => ['nullable', 'exists:polling_units,id'],
+            'appointed_at' => ['required', 'date'],
+            'status' => ['required', 'in:active,inactive'],
+        ]);
+
+        $this->enforceDownwardEscoRules($request->user(), $validated);
+
+        $photoPath = $esco->photo_path;
+        if (! empty($validated['photo']) && str_starts_with($validated['photo'], 'data:image')) {
+            $imageParts = explode(';base64,', $validated['photo']);
+            if (count($imageParts) == 2) {
+                if ($photoPath && Storage::disk('public')->exists($photoPath)) {
+                    Storage::disk('public')->delete($photoPath);
+                }
+                $imageTypeAux = explode('image/', $imageParts[0]);
+                $imageType = $imageTypeAux[1] ?? 'png';
+                $imageBase64 = base64_decode($imageParts[1]);
+                $fileName = 'esco_'.time().'_'.uniqid().'.'.$imageType;
+                Storage::disk('public')->put('escos/photos/'.$fileName, $imageBase64);
+                $photoPath = 'escos/photos/'.$fileName;
+            }
+        }
+
+        $esco->update([
+            'full_name' => $validated['full_name'],
+            'position_id' => $validated['position_id'],
+            'phone' => $validated['phone'],
+            'email' => $validated['email'] ?? null,
+            'photo_path' => $photoPath,
+            'state_id' => $validated['state_id'] ?? null,
+            'lga_id' => $validated['lga_id'] ?? null,
+            'ward_id' => $validated['ward_id'] ?? null,
+            'polling_unit_id' => $validated['polling_unit_id'] ?? null,
+            'appointed_at' => $validated['appointed_at'],
+            'status' => $validated['status'],
+        ]);
+
+        return back()->with('success', 'EXCO official updated successfully.');
+    }
+
     public function destroy(Request $request, EscoOfficial $esco)
     {
         if (! $request->user()->can('manage esco')) {

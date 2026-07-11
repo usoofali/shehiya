@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AnnouncementController;
@@ -29,6 +30,12 @@ Route::post('/check-status', [PublicMemberController::class, 'checkStatus']);
 Route::get('/badge/{membership_number}', [PublicMemberController::class, 'showBadge'])->name('badge.show');
 Route::get('/verify/{membership_number}', [PublicMemberController::class, 'verify'])->name('badge.verify');
 
+Route::get('/esco/badge/{id}', [PublicMemberController::class, 'showEscoBadge'])->name('esco.badge.show');
+Route::get('/esco/verify/{id}', [PublicMemberController::class, 'verifyEsco'])->name('esco.badge.verify');
+
+Route::get('/patrons/badge/{id}', [PublicMemberController::class, 'showPatronBadge'])->name('patron.badge.show');
+Route::get('/patrons/verify/{id}', [PublicMemberController::class, 'verifyPatron'])->name('patron.badge.verify');
+
 // Public Location Data API (used by both public registration and admin member forms)
 Route::get('api/wards/{ward}/polling-units', [MemberController::class, 'pollingUnits'])->name('api.wards.polling-units');
 
@@ -42,7 +49,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('members/{member}/photo', [MemberController::class, 'updatePhoto'])->name('members.photo.update');
 
     // EXCO Leadership
-    Route::resource('esco', EscoController::class)->only(['index', 'store', 'destroy']);
+    Route::resource('esco', EscoController::class)->only(['index', 'store', 'update', 'destroy']);
 
     // Organization Patrons & Royal Leadership
     Route::resource('patrons', PatronController::class)->only(['index', 'store', 'update', 'destroy']);
@@ -57,6 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', UserController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::resource('roles', RoleController::class)->only(['index', 'store', 'update', 'destroy']);
+        Route::resource('positions', PositionController::class)->only(['index', 'store', 'update', 'destroy']);
     });
 });
 

@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
-import { Plus, Search, ShieldCheck, Trash2, Building2, MapPin, X } from 'lucide-vue-next';
+import { Award, Edit, Plus, Search, ShieldCheck, Trash2, Building2, MapPin, X } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
@@ -54,6 +54,7 @@ const stateFilter = ref(props.filters.state_id || '');
 const showAddModal = ref(false);
 const showDeleteModal = ref(false);
 const itemToDelete = ref<number | null>(null);
+const editingOfficial = ref<any>(null);
 
 const applyFilters = () => {
     router.get('/esco', { search: searchInput.value, state_id: stateFilter.value }, { preserveState: true, replace: true });
@@ -100,7 +101,9 @@ watch(() => form.ward_id, async (wardId) => {
 });
 
 const openAddModal = () => {
+    editingOfficial.value = null;
     form.reset();
+    imagePreview.value = null;
     availablePollingUnits.value = [];
     if (userRole.value === 'State Coordinator') {
         form.state_id = user.value.state_id?.toString() || '';
@@ -112,6 +115,23 @@ const openAddModal = () => {
         form.lga_id = user.value.lga_id?.toString() || '';
         form.ward_id = user.value.ward_id?.toString() || '';
     }
+    showAddModal.value = true;
+};
+
+const openEditModal = (official: any) => {
+    editingOfficial.value = official;
+    form.full_name = official.full_name;
+    form.position_id = official.position_id?.toString() || '';
+    form.phone = official.phone;
+    form.email = official.email || '';
+    form.photo = null;
+    form.state_id = official.state_id?.toString() || '';
+    form.lga_id = official.lga_id?.toString() || '';
+    form.ward_id = official.ward_id?.toString() || '';
+    form.polling_unit_id = official.polling_unit_id?.toString() || '';
+    form.appointed_at = official.appointed_at ? official.appointed_at.split('T')[0] : new Date().toISOString().split('T')[0];
+    form.status = official.status || 'active';
+    imagePreview.value = official.photo_path ? `/storage/${official.photo_path}` : null;
     showAddModal.value = true;
 };
 
@@ -173,12 +193,22 @@ const availableWards = computed(() => {
 });
 
 const submitOfficial = () => {
-    form.post('/esco', {
-        onSuccess: () => {
-            showAddModal.value = false;
-            form.reset();
-        },
-    });
+    if (editingOfficial.value) {
+        form.put(`/esco/${editingOfficial.value.id}`, {
+            onSuccess: () => {
+                showAddModal.value = false;
+                editingOfficial.value = null;
+                form.reset();
+            },
+        });
+    } else {
+        form.post('/esco', {
+            onSuccess: () => {
+                showAddModal.value = false;
+                form.reset();
+            },
+        });
+    }
 };
 
 </script>
@@ -243,9 +273,14 @@ const submitOfficial = () => {
                             <span class="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700 ring-1 ring-inset ring-indigo-700/10 dark:bg-indigo-900/30 dark:text-indigo-300">
                                 {{ official.position?.name || 'Official' }}
                             </span>
-                            <button @click="confirmDelete(official.id)" class="text-muted-foreground transition hover:text-rose-500" title="Remove official">
-                                <Trash2 class="size-4" />
-                            </button>
+                            <div class="flex items-center gap-1.5">
+                                <button @click="openEditModal(official)" class="rounded-lg border border-border bg-background p-1.5 text-muted-foreground transition hover:text-foreground" title="Edit official">
+                                    <Edit class="size-4" />
+                                </button>
+                                <button @click="confirmDelete(official.id)" class="rounded-lg border border-border bg-background p-1.5 text-rose-600 transition hover:bg-rose-50 dark:hover:bg-rose-900/20" title="Remove official">
+                                    <Trash2 class="size-4" />
+                                </button>
+                            </div>
                         </div>
                         <div class="mt-4 flex items-center gap-3">
                             <div class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-indigo-100 text-sm font-bold text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-300">
@@ -279,6 +314,17 @@ const submitOfficial = () => {
                             <span class="truncate">PU: <strong class="text-slate-900 dark:text-white">{{ official.polling_unit.code ? `${official.polling_unit.code} - ` : '' }}{{ official.polling_unit.name }}</strong></span>
                         </div>
                     </div>
+
+                    <!-- Card Actions Footer -->
+                    <div class="mt-5 border-t border-border pt-4">
+                        <a
+                            :href="`/esco/badge/${official.id}`"
+                            target="_blank"
+                            class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50/50 px-3 py-2 text-xs font-semibold text-indigo-700 transition hover:bg-indigo-600 hover:text-white dark:border-indigo-900/50 dark:bg-indigo-950/30 dark:text-indigo-300 dark:hover:bg-indigo-600 dark:hover:text-white"
+                        >
+                            <Award class="size-4" /> View ID Badge
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Pagination -->
@@ -305,7 +351,7 @@ const submitOfficial = () => {
         <div v-if="showAddModal" class="fixed inset-0 z-50 flex min-h-screen items-center justify-center overflow-y-auto bg-black/50 p-3 sm:p-6 backdrop-blur-sm">
             <div class="my-auto w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl sm:rounded-3xl bg-background p-4 sm:p-8 shadow-2xl">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-bold text-foreground">Appoint EXCO Official</h2>
+                    <h2 class="text-xl font-bold text-foreground">{{ editingOfficial ? 'Edit EXCO Official' : 'Appoint EXCO Official' }}</h2>
                     <button @click="showAddModal = false" class="rounded-full p-2 text-muted-foreground hover:bg-muted"><X class="size-5" /></button>
                 </div>
 
@@ -388,7 +434,7 @@ const submitOfficial = () => {
                     <div class="flex justify-end gap-3 pt-4 border-t border-border">
                         <button type="button" @click="showAddModal = false" class="rounded-xl px-5 py-2.5 text-sm font-semibold text-muted-foreground hover:bg-muted">Cancel</button>
                         <button type="submit" :disabled="form.processing" class="rounded-xl bg-amber-600 px-6 py-2.5 text-sm font-bold text-white hover:bg-amber-500 disabled:opacity-50">
-                            {{ form.processing ? 'Saving...' : 'Save Appointment' }}
+                            {{ form.processing ? 'Saving...' : (editingOfficial ? 'Save Changes' : 'Save Appointment') }}
                         </button>
                     </div>
                 </form>
