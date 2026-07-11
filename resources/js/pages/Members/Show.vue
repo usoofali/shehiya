@@ -2,7 +2,8 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
-import { ArrowLeft, CheckCircle, Clock, FileCheck, History, ShieldAlert, User, XCircle } from 'lucide-vue-next';
+import { computed } from 'vue';
+import { ArrowLeft, Camera, CheckCircle, Clock, FileCheck, History, ShieldAlert, Upload, User, XCircle } from 'lucide-vue-next';
 
 const props = defineProps<{
     member: {
@@ -54,6 +55,36 @@ const submitVerification = (status: 'verified' | 'rejected') => {
         },
     });
 };
+
+const user = computed(() => (page.props.auth as any)?.user);
+const userRoles = computed(() => user.value?.roles || []);
+const canEditOrVerify = computed(() => {
+    return userRoles.value.some((role: string) => 
+        ['Super Administrator', 'National Administrator', 'State Coordinator', 'LGA Coordinator', 'Ward Coordinator', 'Polling Unit Coordinator'].includes(role)
+    ) || (user.value?.permissions && (user.value.permissions.includes('edit members') || user.value.permissions.includes('verify members')));
+});
+
+const photoForm = useForm({
+    photo: null as File | null,
+});
+
+const handlePhotoChange = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+        photoForm.photo = target.files[0];
+    }
+};
+
+const submitPhotoUpdate = () => {
+    if (!photoForm.photo) return;
+    photoForm.post(`/members/${props.member.id}/photo`, {
+        onSuccess: () => {
+            photoForm.reset();
+            const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement | null;
+            if (fileInput) fileInput.value = '';
+        },
+    });
+};
 </script>
 
 <template>
@@ -64,7 +95,10 @@ const submitVerification = (status: 'verified' | 'rejected') => {
             <!-- Header -->
             <div class="flex items-center justify-between border-b border-border pb-6">
                 <div class="flex items-center gap-4">
-                    <div class="flex size-16 items-center justify-center rounded-full bg-emerald-100 text-2xl font-bold text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-200">
+                    <div v-if="member.photo_path" class="size-16 shrink-0 overflow-hidden rounded-full border-2 border-emerald-500/30 shadow-sm">
+                        <img :src="`/storage/${member.photo_path}`" :alt="`${member.first_name} ${member.last_name}`" class="size-full object-cover" />
+                    </div>
+                    <div v-else class="flex size-16 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-2xl font-bold text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-200">
                         {{ member.first_name[0] }}{{ member.last_name[0] }}
                     </div>
                     <div>
@@ -87,9 +121,18 @@ const submitVerification = (status: 'verified' | 'rejected') => {
                         <p class="font-mono text-sm text-muted-foreground">{{ member.membership_number }}</p>
                     </div>
                 </div>
-                <Link href="/members" class="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground">
-                    <ArrowLeft class="size-4" /> Back to Directory
-                </Link>
+                <div class="flex items-center gap-3">
+                    <a
+                        :href="`/badge/${member.membership_number}`"
+                        target="_blank"
+                        class="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-50 px-3.5 py-2 text-xs font-semibold text-emerald-800 shadow-sm transition hover:bg-emerald-100 dark:border-emerald-500/40 dark:bg-emerald-950/40 dark:text-emerald-200 dark:hover:bg-emerald-900"
+                    >
+                        View ID Badge
+                    </a>
+                    <Link href="/members" class="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground">
+                        <ArrowLeft class="size-4" /> Back to Directory
+                    </Link>
+                </div>
             </div>
 
             <div class="grid gap-6 lg:grid-cols-3">
@@ -180,6 +223,58 @@ const submitVerification = (status: 'verified' | 'rejected') => {
 
                 <!-- Right Action Panel -->
                 <div class="space-y-6">
+                    <!-- Member Photograph Card -->
+                    <div class="rounded-2xl border border-border bg-card p-6 shadow-sm dark:bg-sidebar">
+                        <h3 class="flex items-center gap-2 font-semibold text-foreground">
+                            <Camera class="size-5 text-emerald-600" /> Passport Photograph
+                        </h3>
+                        <p class="mt-1 text-xs text-muted-foreground">Official portrait photo used on digital ID cards and verification checks.</p>
+
+                        <div class="mt-5 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/30 p-4 text-center">
+                            <div v-if="member.photo_path" class="relative group">
+                                <img
+                                    :src="`/storage/${member.photo_path}`"
+                                    :alt="`${member.first_name} ${member.last_name}`"
+                                    class="size-36 rounded-2xl object-cover shadow-md border-4 border-emerald-500/20"
+                                />
+                                <div class="mt-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">✓ Photo Uploaded</div>
+                            </div>
+                            <div v-else class="flex flex-col items-center py-4">
+                                <div class="flex size-20 items-center justify-center rounded-full bg-muted text-3xl font-bold text-muted-foreground">
+                                    {{ member.first_name[0] }}{{ member.last_name[0] }}
+                                </div>
+                                <p class="mt-2 text-xs font-semibold text-rose-500">No passport photograph attached</p>
+                            </div>
+                        </div>
+
+                        <!-- Photo Update Form for Admin / Coordinator -->
+                        <div v-if="canEditOrVerify" class="mt-5 border-t border-border pt-4">
+                            <h4 class="text-xs font-bold uppercase text-foreground">Update / Upload Photo</h4>
+                            <p class="text-[11px] text-muted-foreground">Select a high-definition portrait photo (max 2MB).</p>
+
+                            <form @submit.prevent="submitPhotoUpdate" class="mt-3 space-y-3">
+                                <div>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        @change="handlePhotoChange"
+                                        class="block w-full text-xs text-muted-foreground file:mr-3 file:rounded-xl file:border-0 file:bg-emerald-50 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100 dark:file:bg-emerald-950/50 dark:file:text-emerald-300"
+                                    />
+                                    <p v-if="photoForm.errors.photo" class="mt-1 text-xs text-rose-500">{{ photoForm.errors.photo }}</p>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    :disabled="photoForm.processing || !photoForm.photo"
+                                    class="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-secondary px-4 py-2 text-xs font-semibold text-secondary-foreground shadow-sm transition hover:bg-secondary/80 disabled:opacity-50"
+                                >
+                                    <Upload class="size-3.5" />
+                                    {{ photoForm.processing ? 'Uploading...' : 'Save Photograph' }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
                     <div class="rounded-2xl border border-border bg-card p-6 shadow-sm dark:bg-sidebar">
                         <h3 class="flex items-center gap-2 font-semibold text-foreground"><FileCheck class="size-5 text-emerald-600" /> Review Application</h3>
                         <p class="mt-1 text-xs text-muted-foreground">As an authorized coordinator, you can review and change the verification status of this member.</p>

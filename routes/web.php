@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('members/bulk-verify', [MemberVerificationController::class, 'bulkStore'])->name('members.bulk-verify');
     Route::resource('members', MemberController::class)->only(['index', 'create', 'store', 'show']);
     Route::post('members/{member}/verify', [MemberVerificationController::class, 'store'])->name('members.verify');
+    Route::post('members/{member}/photo', [MemberController::class, 'updatePhoto'])->name('members.photo.update');
 
     // EXCO Leadership
     Route::resource('esco', EscoController::class)->only(['index', 'store', 'destroy']);

@@ -399,16 +399,26 @@ const confirmBulkAction = () => {
                                     </span>
                                 </td>
                                 <td class="whitespace-nowrap px-3.5 py-3.5 text-right">
-                                    <Link
-                                        :href="`/members/${member.id}`"
-                                        class="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold shadow-sm transition"
-                                        :class="{
-                                            'bg-gradient-to-r from-amber-600 to-emerald-600 text-white hover:from-amber-500 hover:to-emerald-500': member.status === 'pending',
-                                            'border border-border bg-card text-foreground hover:bg-muted': member.status !== 'pending'
-                                        }"
-                                    >
-                                        {{ member.status === 'pending' ? 'Verify Profile' : 'View Profile' }}
-                                    </Link>
+                                    <div class="flex items-center justify-end gap-1.5">
+                                        <Link
+                                            :href="`/members/${member.id}`"
+                                            class="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold shadow-sm transition"
+                                            :class="{
+                                                'bg-gradient-to-r from-amber-600 to-emerald-600 text-white hover:from-amber-500 hover:to-emerald-500': member.status === 'pending',
+                                                'border border-border bg-card text-foreground hover:bg-muted': member.status !== 'pending'
+                                            }"
+                                        >
+                                            {{ member.status === 'pending' ? 'Verify Profile' : 'View Profile' }}
+                                        </Link>
+                                        <a
+                                            :href="`/badge/${member.membership_number}`"
+                                            target="_blank"
+                                            class="inline-flex items-center gap-1 rounded-lg border border-emerald-500/30 bg-emerald-50 px-2.5 py-1.5 text-xs font-semibold text-emerald-800 shadow-sm transition hover:bg-emerald-100 dark:border-emerald-500/40 dark:bg-emerald-950/40 dark:text-emerald-200 dark:hover:bg-emerald-900"
+                                            title="View / Print Digital Membership Badge"
+                                        >
+                                            View Badge
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>

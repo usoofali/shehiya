@@ -7,6 +7,7 @@ use App\Models\State;
 use App\Models\Ward;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -91,7 +92,7 @@ class MemberController extends Controller
 
         $photoPath = null;
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('photos', 'public');
+            $photoPath = $request->file('photo')->store('members/photos', 'public');
         }
 
         // Generate auto membership number
@@ -132,6 +133,50 @@ class MemberController extends Controller
         return Inertia::render('Members/Show', [
             'member' => $member,
         ]);
+    }
+
+    public function updatePhoto(Request $request, Member $member)
+    {
+        if (! Member::accessibleBy($request->user())->where('id', $member->id)->exists()) {
+            abort(403, 'Unauthorized jurisdiction access.');
+        }
+
+        if (! $request->user()->can('edit members') && ! $request->user()->can('verify members')) {
+            abort(403, 'You do not have permission to update member photographs.');
+        }
+
+        $validated = $request->validate([
+            'photo' => ['required'],
+        ]);
+
+        $photoPath = null;
+        if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+            $photoPath = $request->file('photo')->store('members/photos', 'public');
+        } elseif (! empty($validated['photo']) && is_string($validated['photo'])) {
+            $imageParts = explode(';base64,', $validated['photo']);
+            if (count($imageParts) == 2) {
+                $imageTypeAux = explode('image/', $imageParts[0]);
+                $imageType = $imageTypeAux[1] ?? 'png';
+                $imageBase64 = base64_decode($imageParts[1]);
+                $fileName = 'member_'.time().'_'.uniqid().'.'.$imageType;
+                Storage::disk('public')->put('members/photos/'.$fileName, $imageBase64);
+                $photoPath = 'members/photos/'.$fileName;
+            }
+        }
+
+        if (empty($photoPath)) {
+            return back()->withErrors(['photo' => 'Please provide a valid image file or portrait photo.'])->withInput();
+        }
+
+        if ($member->photo_path && Storage::disk('public')->exists($member->photo_path)) {
+            Storage::disk('public')->delete($member->photo_path);
+        }
+
+        $member->update([
+            'photo_path' => $photoPath,
+        ]);
+
+        return back()->with('success', 'Member photograph updated successfully.');
     }
 
     public function pollingUnits(Ward $ward): JsonResponse
