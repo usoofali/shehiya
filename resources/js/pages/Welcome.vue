@@ -210,7 +210,7 @@ const missionPoints = [
                         :href="route('status.check')"
                         class="rounded-2xl border bg-gradient-to-r from-amber-600 to-emerald-600 bg-white px-8 py-4 text-base font-bold text-white shadow-sm transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                     >
-                        Status &amp; Membership Tag
+                        Membership Card
                     </Link>
                     <a
                         href="#esco-directory"

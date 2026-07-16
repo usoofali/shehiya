@@ -7,6 +7,7 @@ use App\Models\Member;
 use App\Models\Patron;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -45,6 +46,72 @@ class PublicMemberController extends Controller
             'membership_number' => $member->membership_number,
             'status' => $member->status,
             'phone' => $member->phone,
+            'voter_card_path' => $member->voter_card_path,
+            'referrals_count' => $member->referrals_count,
+            'verified_referrals_count' => $member->verified_referrals_count,
+            'referral_badge' => $member->referral_badge,
+            'coordinator_name' => $coordinator ? $coordinator->name : null,
+            'coordinator_phone' => $coordinator ? $coordinator->email : null,
+        ]);
+    }
+
+    /**
+     * Handle retroactive Voter Card upload for an already registered member.
+     */
+    public function uploadVoterCard(Request $request)
+    {
+        $validated = $request->validate([
+            'phone' => ['required', 'string'],
+            'membership_number' => ['required', 'string'],
+            'voter_card' => ['required'],
+        ]);
+
+        $member = Member::where('phone', $validated['phone'])
+            ->where('membership_number', $validated['membership_number'])
+            ->first();
+
+        if (! $member) {
+            return back()->with('error', 'Authentication failed. Member record not found matching phone and membership number.');
+        }
+
+        $voterCardPath = null;
+        if ($request->hasFile('voter_card') && $request->file('voter_card')->isValid()) {
+            $voterCardPath = $request->file('voter_card')->store('members/voter_cards', 'public');
+        } elseif (! empty($validated['voter_card']) && is_string($validated['voter_card'])) {
+            $imageParts = explode(';base64,', $validated['voter_card']);
+            if (count($imageParts) == 2) {
+                $imageTypeAux = explode('image/', $imageParts[0]);
+                $imageType = $imageTypeAux[1] ?? 'png';
+                $imageBase64 = base64_decode($imageParts[1]);
+                $fileName = 'vc_'.time().'_'.uniqid().'.'.$imageType;
+                Storage::disk('public')->put('members/voter_cards/'.$fileName, $imageBase64);
+                $voterCardPath = 'members/voter_cards/'.$fileName;
+            }
+        }
+
+        if (empty($voterCardPath)) {
+            return back()->withErrors(['voter_card' => 'A valid Voter Card image or scan is required before uploading.'])->withInput();
+        }
+
+        if ($member->voter_card_path && Storage::disk('public')->exists($member->voter_card_path)) {
+            Storage::disk('public')->delete($member->voter_card_path);
+        }
+
+        $member->update([
+            'voter_card_path' => $voterCardPath,
+        ]);
+
+        $coordinator = User::role('Ward Coordinator')
+            ->where('ward_id', $member->ward_id)
+            ->first();
+
+        return back()->with('success', 'Your Voter Card has been uploaded and linked to your membership profile successfully!')->with('memberData', [
+            'first_name' => $member->first_name,
+            'last_name' => $member->last_name,
+            'membership_number' => $member->membership_number,
+            'status' => $member->status,
+            'phone' => $member->phone,
+            'voter_card_path' => $member->voter_card_path,
             'referrals_count' => $member->referrals_count,
             'verified_referrals_count' => $member->verified_referrals_count,
             'referral_badge' => $member->referral_badge,
@@ -67,6 +134,7 @@ class PublicMemberController extends Controller
                 'name' => $member->first_name.' '.$member->last_name,
                 'membership_number' => $member->membership_number,
                 'status' => $member->status,
+                'voter_card_path' => $member->voter_card_path,
                 'state' => $member->state?->name,
                 'lga' => $member->lga?->name,
                 'ward' => $member->ward?->name,
@@ -89,6 +157,7 @@ class PublicMemberController extends Controller
                 'name' => $member->first_name.' '.$member->last_name,
                 'membership_number' => $member->membership_number,
                 'status' => $member->status,
+                'voter_card_path' => $member->voter_card_path,
                 'state' => $member->state?->name,
                 'lga' => $member->lga?->name,
                 'ward' => $member->ward?->name,

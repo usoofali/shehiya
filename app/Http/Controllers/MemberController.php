@@ -84,6 +84,7 @@ class MemberController extends Controller
             'email' => ['nullable', 'email', 'max:255'],
             'occupation' => ['nullable', 'string', 'max:255'],
             'photo' => ['nullable', 'image', 'max:2048'],
+            'voter_card' => ['required', 'image', 'max:5120'],
             'state_id' => ['required', 'exists:states,id'],
             'lga_id' => ['required', 'exists:lgas,id'],
             'ward_id' => ['required', 'exists:wards,id'],
@@ -93,6 +94,11 @@ class MemberController extends Controller
         $photoPath = null;
         if ($request->hasFile('photo')) {
             $photoPath = $request->file('photo')->store('members/photos', 'public');
+        }
+
+        $voterCardPath = null;
+        if ($request->hasFile('voter_card')) {
+            $voterCardPath = $request->file('voter_card')->store('members/voter_cards', 'public');
         }
 
         // Generate auto membership number
@@ -110,6 +116,7 @@ class MemberController extends Controller
             'email' => $validated['email'] ?? null,
             'occupation' => $validated['occupation'] ?? null,
             'photo_path' => $photoPath,
+            'voter_card_path' => $voterCardPath,
             'state_id' => $validated['state_id'],
             'lga_id' => $validated['lga_id'],
             'ward_id' => $validated['ward_id'],

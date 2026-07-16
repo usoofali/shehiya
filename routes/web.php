@@ -27,6 +27,7 @@ use App\Http\Controllers\PublicMemberController;
 
 Route::get('/check-status', [PublicMemberController::class, 'showCheckStatus'])->name('status.check');
 Route::post('/check-status', [PublicMemberController::class, 'checkStatus']);
+Route::post('/check-status/voter-card', [PublicMemberController::class, 'uploadVoterCard'])->name('status.upload-voter-card');
 Route::get('/badge/{membership_number}', [PublicMemberController::class, 'showBadge'])->name('badge.show');
 Route::get('/verify/{membership_number}', [PublicMemberController::class, 'verify'])->name('badge.verify');
 

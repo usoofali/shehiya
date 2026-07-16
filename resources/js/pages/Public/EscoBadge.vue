@@ -85,14 +85,14 @@ const verificationUrl = typeof window !== 'undefined' ? `${window.location.origi
                 <!-- Inactive Overlay Warning -->
                 <div v-if="esco.status !== 'active'" class="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
                     <div class="absolute inset-0 bg-rose-500/10 backdrop-blur-[1px]"></div>
-                    <div class="rotate-[-35deg] border-4 border-rose-500 px-6 py-2 text-3xl font-black tracking-widest text-rose-500 opacity-90 shadow-sm backdrop-blur-sm shadow-rose-500/20">
+                    <div class="rotate-[-35deg] rounded-[50%/35%] border-4 border-rose-500 px-6 py-3 text-3xl font-black tracking-widest text-rose-500 opacity-90 shadow-sm backdrop-blur-sm shadow-rose-500/20 text-center leading-tight">
                         INACTIVE
                     </div>
                 </div>
 
                 <!-- Active Stamp -->
                 <div v-if="esco.status === 'active'" class="absolute inset-0 z-40 flex items-center justify-center pointer-events-none opacity-20">
-                    <div class="rotate-[-35deg] border-4 border-indigo-600 px-6 py-2 text-3xl font-black tracking-widest text-indigo-600 shadow-sm">
+                    <div class="rotate-[-35deg] rounded-[50%/35%] border-4 border-indigo-600 px-6 py-3 text-3xl font-black tracking-widest text-indigo-600 shadow-sm text-center leading-tight">
                         EXECUTIVE
                     </div>
                 </div>

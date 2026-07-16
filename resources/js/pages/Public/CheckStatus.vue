@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { Award, CheckCircle, ChevronRight, Home, LoaderCircle, Printer, Search, ShieldCheck, XCircle } from 'lucide-vue-next';
+import { Award, CheckCircle, ChevronRight, Home, LoaderCircle, Printer, Search, ShieldCheck, Upload, XCircle } from 'lucide-vue-next';
 
 const form = useForm({
     phone: '',
@@ -29,6 +29,61 @@ const copyReferralLink = async (link: string) => {
     } catch (err) {
         console.error('Failed to copy: ', err);
     }
+};
+
+const voterCardForm = useForm({
+    phone: '',
+    membership_number: '',
+    voter_card: '' as string | File,
+});
+
+const handleVoterCardUpload = (e: Event) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const maxDimension = 800;
+            let width = img.width;
+            let height = img.height;
+            if (width > height) {
+                if (width > maxDimension) {
+                    height = Math.round((height * maxDimension) / width);
+                    width = maxDimension;
+                }
+            } else {
+                if (height > maxDimension) {
+                    width = Math.round((width * maxDimension) / height);
+                    height = maxDimension;
+                }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                ctx.drawImage(img, 0, 0, width, height);
+                voterCardForm.voter_card = canvas.toDataURL('image/jpeg', 0.8);
+            }
+        };
+        if (event.target?.result) {
+            img.src = event.target.result as string;
+        }
+    };
+    reader.readAsDataURL(file);
+};
+
+const submitVoterCard = (memberData: any) => {
+    voterCardForm.phone = memberData.phone;
+    voterCardForm.membership_number = memberData.membership_number;
+    voterCardForm.post(route('status.upload-voter-card'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            voterCardForm.voter_card = '';
+        },
+    });
 };
 </script>
 
@@ -96,6 +151,14 @@ const copyReferralLink = async (link: string) => {
                         </div>
                     </div>
 
+                    <!-- Success Alert -->
+                    <div v-if="$page.props.flash?.success" class="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-emerald-300">
+                        <div class="flex items-start gap-3">
+                            <CheckCircle class="size-5 shrink-0 text-emerald-500" />
+                            <p class="text-sm font-medium">{{ $page.props.flash.success }}</p>
+                        </div>
+                    </div>
+
                     <!-- Result Card -->
                     <div v-if="$page.props.flash?.memberData" class="mt-8 rounded-2xl border border-slate-100 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-800/50">
                         <div class="flex items-center justify-between mb-4">
@@ -137,6 +200,64 @@ const copyReferralLink = async (link: string) => {
                             </div>
                         </dl>
 
+                        <!-- Voter Card Status & Upload -->
+                        <div class="mt-6 border-t border-slate-200/80 pt-5 dark:border-slate-800">
+                            <div v-if="!$page.props.flash.memberData.voter_card_path" class="rounded-2xl border border-amber-300/80 bg-amber-50/80 p-4 dark:border-amber-900/50 dark:bg-amber-950/30">
+                                <div class="flex items-start gap-3">
+                                    <div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-amber-500 text-white font-bold">!</div>
+                                    <div class="flex-1">
+                                        <h4 class="text-sm font-bold text-amber-900 dark:text-amber-200">
+                                            Voter Card Upload Required
+                                        </h4>
+                                        <p class="mt-1 text-xs text-amber-800 dark:text-amber-300">
+                                            Your membership profile does not have a Voter Card attached right now (either due to initial registration without one or a previous verification rejection). Please upload a clear photo or scan of your voter card below to complete your profile.
+                                        </p>
+
+                                        <form @submit.prevent="submitVoterCard($page.props.flash.memberData)" class="mt-4 space-y-3">
+                                            <div v-if="!voterCardForm.voter_card" class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-amber-300 bg-white/60 p-4 text-center dark:border-amber-800/80 dark:bg-slate-900/50">
+                                                <Upload class="size-6 text-amber-600 dark:text-amber-400" />
+                                                <label class="mt-2 inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-amber-600 px-3.5 py-1.5 text-xs font-bold text-white shadow hover:bg-amber-500">
+                                                    Browse Document
+                                                    <input type="file" accept="image/*" @change="handleVoterCardUpload" class="hidden" />
+                                                </label>
+                                            </div>
+                                            <div v-else class="flex items-center justify-between rounded-xl border border-amber-200 bg-white p-3 shadow-sm dark:border-amber-800 dark:bg-slate-900">
+                                                <div class="flex items-center gap-3">
+                                                    <img :src="(voterCardForm.voter_card as string)" alt="Voter Card Preview" class="size-12 rounded-lg object-cover border border-amber-400" />
+                                                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Voter Card Ready</span>
+                                                </div>
+                                                <button type="button" @click="voterCardForm.voter_card = ''" class="text-xs font-semibold text-rose-600 hover:underline">Remove</button>
+                                            </div>
+                                            <p v-if="voterCardForm.errors.voter_card" class="text-xs text-rose-600">{{ voterCardForm.errors.voter_card }}</p>
+
+                                            <div class="flex items-center justify-end gap-2 pt-1">
+                                                <button
+                                                    type="submit"
+                                                    :disabled="voterCardForm.processing || !voterCardForm.voter_card"
+                                                    class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-1.5 text-xs font-bold text-white shadow hover:bg-emerald-500 disabled:opacity-50"
+                                                >
+                                                    <LoaderCircle v-if="voterCardForm.processing" class="size-3.5 animate-spin" />
+                                                    {{ voterCardForm.processing ? 'Uploading...' : 'Upload & Save Card' }}
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div v-else class="flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 dark:border-emerald-900/50 dark:bg-emerald-950/20">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white">
+                                        <CheckCircle class="size-5" />
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-emerald-900 dark:text-emerald-300">Voter Card Document Attached</h4>
+                                        <p class="text-[11px] text-emerald-700 dark:text-emerald-400">Your profile includes a valid voter card scan.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="mt-6">
                             <template v-if="$page.props.flash.memberData.status !== 'verified'">
                                 <div class="mb-4 rounded-xl bg-amber-100/50 p-3 text-xs text-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
@@ -153,7 +274,7 @@ const copyReferralLink = async (link: string) => {
                                 :href="route('badge.show', $page.props.flash.memberData.membership_number)"
                                 class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-600 to-emerald-600 py-3 text-sm font-bold text-white shadow-md transition hover:from-amber-500 hover:to-emerald-500"
                             >
-                                <Printer class="size-4" /> View / Print ID Badge
+                                <Printer class="size-4" /> View / Print Membership Card
                             </Link>
                         </div>
 

@@ -10,6 +10,7 @@ const props = defineProps<{
         membership_number: string;
         photo_url: string | null;
         status: string;
+        voter_card_path?: string | null;
         state?: string;
         lga?: string;
         ward?: string;
@@ -83,17 +84,17 @@ const verificationUrl = window.location.origin + '/verify/' + props.member.membe
             <!-- The Card (CR80 Standard size: 2.125" x 3.375", represented here conceptually but scalable for print) -->
             <div ref="badgeRef" class="badge-card relative overflow-hidden rounded-[14px] bg-white shadow-2xl print:shadow-none sm:w-[320px] w-full max-w-[320px] min-h-[510px] aspect-[2.125/3.375] flex flex-col border border-slate-200 print:border-none">
 
-                <!-- Unverified Overlay Warning -->
-                <div v-if="member.status !== 'verified'" class="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
+                <!-- Unverified or Update Required Warning -->
+                <div v-if="member.status !== 'verified' || !member.voter_card_path" class="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
                     <div class="absolute inset-0 bg-rose-500/10 backdrop-blur-[1px]"></div>
-                    <div class="rotate-[-35deg] border-4 border-rose-500 px-6 py-2 text-3xl font-black tracking-widest text-rose-500 opacity-90 shadow-sm backdrop-blur-sm shadow-rose-500/20">
-                        NOT VERIFIED
+                    <div class="rotate-[-35deg] rounded-[50%/35%] border-4 border-rose-500 px-6 py-3 text-2xl font-black tracking-widest text-rose-500 opacity-90 shadow-sm backdrop-blur-sm shadow-rose-500/20 text-center leading-tight">
+                        {{ !member.voter_card_path ? 'UPDATE REQUIRED' : 'NOT VERIFIED' }}
                     </div>
                 </div>
 
-                <!-- Verified Stamp -->
-                <div v-if="member.status === 'verified'" class="absolute inset-0 z-40 flex items-center justify-center pointer-events-none opacity-30">
-                    <div class="rotate-[-35deg] border-4 border-emerald-600 px-6 py-2 text-3xl font-black tracking-widest text-emerald-600 shadow-sm">
+                <!-- New Verified Stamp (VOTER VERIFIED replaces old VERIFIED stamp) -->
+                <div v-if="member.status === 'verified' && member.voter_card_path" class="absolute inset-0 z-40 flex items-center justify-center pointer-events-none opacity-30">
+                    <div class="rotate-[-35deg] rounded-[40%/40%] border-4 border-emerald-600 px-6 py-3 text-2xl font-black tracking-widest text-emerald-600 shadow-sm text-center leading-tight">
                         VERIFIED
                     </div>
                 </div>
@@ -118,7 +119,7 @@ const verificationUrl = window.location.origin + '/verify/' + props.member.membe
                         <div v-else class="flex h-full w-full items-center justify-center bg-slate-100 text-slate-400">
                             <span class="text-3xl font-bold uppercase">{{ member.name.charAt(0) }}</span>
                         </div>
-                        <div v-if="member.status === 'verified'" class="absolute bottom-0.5 right-0.5 rounded-full bg-emerald-500 p-0.5 shadow-sm">
+                        <div v-if="member.status === 'verified' && member.voter_card_path" class="absolute bottom-0.5 right-0.5 rounded-full bg-emerald-500 p-0.5 shadow-sm">
                             <ShieldCheck class="size-3 text-white" />
                         </div>
                     </div>

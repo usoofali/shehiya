@@ -17,6 +17,7 @@ const props = defineProps<{
         email?: string;
         occupation?: string;
         photo_path?: string;
+        voter_card_path?: string;
         status: string;
         registered_at: string;
         state?: { name: string };
@@ -272,6 +273,36 @@ const submitPhotoUpdate = () => {
                                     {{ photoForm.processing ? 'Uploading...' : 'Save Photograph' }}
                                 </button>
                             </form>
+                        </div>
+                    </div>
+
+                    <!-- Voter Card Document Card -->
+                    <div class="rounded-2xl border border-border bg-card p-6 shadow-sm dark:bg-sidebar">
+                        <h3 class="flex items-center gap-2 font-semibold text-foreground">
+                            <FileCheck class="size-5 text-indigo-600" /> Voter Registration Card
+                        </h3>
+                        <p class="mt-1 text-xs text-muted-foreground">Official voter identification card used to verify electoral registration details.</p>
+
+                        <div class="mt-5 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/30 p-4 text-center">
+                            <div v-if="member.voter_card_path" class="relative group">
+                                <a :href="`/storage/${member.voter_card_path}`" target="_blank" class="block overflow-hidden rounded-xl border-2 border-indigo-500/30 shadow-md transition hover:scale-[1.02]">
+                                    <img
+                                        :src="`/storage/${member.voter_card_path}`"
+                                        :alt="`${member.first_name} ${member.last_name} Voter Card`"
+                                        class="h-36 w-full max-w-xs object-contain bg-background"
+                                    />
+                                </a>
+                                <div class="mt-2 flex items-center justify-center gap-2">
+                                    <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">✓ Voter Card Uploaded</span>
+                                    <a :href="`/storage/${member.voter_card_path}`" target="_blank" class="text-xs font-bold text-emerald-600 hover:underline">View Full Screen &rarr;</a>
+                                </div>
+                            </div>
+                            <div v-else class="flex flex-col items-center py-4">
+                                <div class="flex size-16 items-center justify-center rounded-full bg-muted text-2xl font-bold text-muted-foreground">
+                                    <FileCheck class="size-8 text-muted-foreground/60" />
+                                </div>
+                                <p class="mt-2 text-xs font-semibold text-rose-500">No voter card attached</p>
+                            </div>
                         </div>
                     </div>
 

@@ -33,6 +33,7 @@ const form = useForm({
     ward_id: '',
     polling_unit_id: '',
     photo: '',
+    voter_card: '',
     referral_code: refParam,
 });
 
@@ -81,6 +82,44 @@ const handlePhotoUpload = (e: Event) => {
     reader.readAsDataURL(file);
 };
 
+const handleVoterCardUpload = (e: Event) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const maxDimension = 800;
+            let width = img.width;
+            let height = img.height;
+            if (width > height) {
+                if (width > maxDimension) {
+                    height = Math.round((height * maxDimension) / width);
+                    width = maxDimension;
+                }
+            } else {
+                if (height > maxDimension) {
+                    width = Math.round((width * maxDimension) / height);
+                    height = maxDimension;
+                }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                ctx.drawImage(img, 0, 0, width, height);
+                form.voter_card = canvas.toDataURL('image/jpeg', 0.8);
+            }
+        };
+        if (event.target?.result) {
+            img.src = event.target.result as string;
+        }
+    };
+    reader.readAsDataURL(file);
+};
+
 watch(() => form.state_id, () => {
     form.lga_id = '';
     form.ward_id = '';
@@ -118,6 +157,11 @@ const submit = () => {
     if (!form.photo) {
         form.setError('photo', 'Passport photograph is required. Please choose or capture your portrait photo before submitting.');
         document.getElementById('photo-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+    if (!form.voter_card) {
+        form.setError('voter_card', 'Voter Card image or document scan is required. Please upload your voter registration card before submitting.');
+        document.getElementById('voter-card-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
     form.post(route('register'));
@@ -315,6 +359,57 @@ const selectClass = 'mt-1 w-full rounded-xl border border-slate-300 bg-white px-
                         </div>
                     </div>
                     <p v-if="form.errors.photo" class="mt-2 text-xs text-rose-500">{{ form.errors.photo }}</p>
+                </div>
+
+                <!-- Voter Card Section -->
+                <div id="voter-card-section" class="border-t border-slate-200 pt-8 dark:border-slate-800">
+                    <h2 class="flex items-center gap-1.5 text-base font-bold text-slate-900 dark:text-white">
+                        Voter Registration Card <span class="text-xs font-bold text-rose-500">* Required</span>
+                    </h2>
+                    <p class="mt-0.5 text-xs text-slate-500">Upload a clear photograph or scanned copy of your permanent or temporary voter card (Required — Max 5MB, JPG/PNG supported). Required to verify your electoral registration.</p>
+
+                    <div class="mt-5">
+                        <div v-if="!form.voter_card" class="relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/60 px-6 py-8 text-center transition hover:border-amber-500 hover:bg-amber-50/20 dark:border-slate-700 dark:bg-slate-800/40 dark:hover:border-amber-500/80">
+                            <div class="flex size-14 items-center justify-center rounded-full bg-amber-50 text-amber-600 shadow-sm dark:bg-amber-950/50 dark:text-amber-400">
+                                <Upload class="size-6" />
+                            </div>
+                            <h3 class="mt-4 text-sm font-semibold text-slate-900 dark:text-white">Click to choose document photo or drag &amp; drop</h3>
+                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Voter card photo or document scan (PNG, JPG up to 5MB). Will be optimized automatically.</p>
+                            <label class="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-amber-600 to-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-600/10 transition hover:from-amber-500 hover:to-emerald-500">
+                                <Upload class="size-4" /> Browse Voter Card
+                                <input type="file" accept="image/*" @change="handleVoterCardUpload" class="hidden" />
+                            </label>
+                        </div>
+
+                        <div v-else class="flex flex-col items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-5 dark:border-slate-800 dark:bg-slate-800/50 sm:flex-row">
+                            <div class="flex items-center gap-4">
+                                <div class="h-20 w-32 shrink-0 overflow-hidden rounded-xl border-2 border-amber-500 bg-white shadow-md dark:bg-slate-900">
+                                    <img :src="form.voter_card" alt="Voter Card Preview" class="h-full w-full object-cover" />
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white">Voter Card Attached</h4>
+                                    <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">High-clarity document scan ready.</p>
+                                    <span class="mt-1.5 inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300">
+                                        <CheckCircle class="size-3" /> Ready for Verification
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="cursor-pointer rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
+                                    Change File
+                                    <input type="file" accept="image/*" @change="handleVoterCardUpload" class="hidden" />
+                                </label>
+                                <button
+                                    type="button"
+                                    @click="form.voter_card = ''"
+                                    class="inline-flex items-center gap-1 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-950/80"
+                                >
+                                    <X class="size-3.5" /> Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <p v-if="form.errors.voter_card" class="mt-2 text-xs text-rose-500">{{ form.errors.voter_card }}</p>
                 </div>
 
                 <!-- Notice -->

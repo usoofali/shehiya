@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Member;
 use App\Models\MemberVerification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MemberVerificationController extends Controller
 {
@@ -25,9 +26,15 @@ class MemberVerificationController extends Controller
 
         $previousStatus = $member->status;
 
-        $member->update([
-            'status' => $validated['new_status'],
-        ]);
+        $updateData = ['status' => $validated['new_status']];
+        if ($validated['new_status'] === 'rejected') {
+            if ($member->voter_card_path && Storage::disk('public')->exists($member->voter_card_path)) {
+                Storage::disk('public')->delete($member->voter_card_path);
+            }
+            $updateData['voter_card_path'] = null;
+        }
+
+        $member->update($updateData);
 
         MemberVerification::create([
             'member_id' => $member->id,
@@ -62,9 +69,15 @@ class MemberVerificationController extends Controller
             if ($member->status !== $validated['new_status']) {
                 $previousStatus = $member->status;
 
-                $member->update([
-                    'status' => $validated['new_status'],
-                ]);
+                $updateData = ['status' => $validated['new_status']];
+                if ($validated['new_status'] === 'rejected') {
+                    if ($member->voter_card_path && Storage::disk('public')->exists($member->voter_card_path)) {
+                        Storage::disk('public')->delete($member->voter_card_path);
+                    }
+                    $updateData['voter_card_path'] = null;
+                }
+
+                $member->update($updateData);
 
                 MemberVerification::create([
                     'member_id' => $member->id,

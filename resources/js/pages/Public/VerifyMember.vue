@@ -7,6 +7,7 @@ defineProps<{
         name: string;
         membership_number: string;
         status: string;
+        voter_card_path?: string | null;
         state?: string;
         lga?: string;
         ward?: string;
@@ -42,16 +43,16 @@ defineProps<{
                 <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900">
                     <!-- Status Banner -->
                     <div class="bg-gradient-to-r px-5 pt-8 pb-16 text-center text-white sm:px-6"
-                        :class="member.status === 'verified' ? 'from-emerald-500 to-emerald-700' : 'from-amber-500 to-amber-700'">
+                        :class="member.status === 'verified' && member.voter_card_path ? 'from-emerald-500 to-emerald-700' : 'from-amber-500 to-amber-700'">
                         <div class="mx-auto mb-3 flex size-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-                            <ShieldCheck v-if="member.status === 'verified'" class="size-8" />
+                            <ShieldCheck v-if="member.status === 'verified' && member.voter_card_path" class="size-8" />
                             <Award v-else class="size-8" />
                         </div>
                         <h2 class="text-xl font-black uppercase tracking-wider">
-                            {{ member.status === 'verified' ? 'Verified Member' : 'Pending Verification' }}
+                            {{ member.status === 'verified' && member.voter_card_path ? 'Verified Member • Voter ID' : (!member.voter_card_path ? 'Update Required • Missing Voter Card' : 'Pending Verification') }}
                         </h2>
                         <p class="mt-1.5 text-xs sm:text-sm font-medium text-white/90">
-                            {{ member.status === 'verified' ? 'Valid Shaihiyya Amanar Jagora Credentials' : 'Awaiting Coordinator Approval' }}
+                            {{ member.status === 'verified' && member.voter_card_path ? 'Valid Shaihiyya Amanar Jagora & Voter Card Credentials' : (!member.voter_card_path ? 'Please upload your Voter Registration Card via Status Check to re-validate membership' : 'Awaiting Coordinator Approval') }}
                         </p>
                     </div>
 

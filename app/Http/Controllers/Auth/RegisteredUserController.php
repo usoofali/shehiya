@@ -57,6 +57,7 @@ class RegisteredUserController extends Controller
             'ward_id' => ['required', 'exists:wards,id'],
             'polling_unit_id' => ['nullable', 'exists:polling_units,id'],
             'photo' => ['required'],
+            'voter_card' => ['required'],
             'referral_code' => ['nullable', 'string', 'size:8'],
         ]);
 
@@ -77,6 +78,25 @@ class RegisteredUserController extends Controller
 
         if (empty($photoPath)) {
             return back()->withErrors(['photo' => 'A valid passport photograph is required. Please choose or capture your portrait photo before submitting.'])->withInput();
+        }
+
+        $voterCardPath = null;
+        if ($request->hasFile('voter_card') && $request->file('voter_card')->isValid()) {
+            $voterCardPath = $request->file('voter_card')->store('members/voter_cards', 'public');
+        } elseif (! empty($validated['voter_card']) && is_string($validated['voter_card'])) {
+            $imageParts = explode(';base64,', $validated['voter_card']);
+            if (count($imageParts) == 2) {
+                $imageTypeAux = explode('image/', $imageParts[0]);
+                $imageType = $imageTypeAux[1] ?? 'png';
+                $imageBase64 = base64_decode($imageParts[1]);
+                $fileName = 'voter_card_'.time().'_'.uniqid().'.'.$imageType;
+                Storage::disk('public')->put('members/voter_cards/'.$fileName, $imageBase64);
+                $voterCardPath = 'members/voter_cards/'.$fileName;
+            }
+        }
+
+        if (empty($voterCardPath)) {
+            return back()->withErrors(['voter_card' => 'A valid Voter Card image or document scan is required before submitting.'])->withInput();
         }
 
         $latestId = Member::max('id') ?? 0;
@@ -101,6 +121,7 @@ class RegisteredUserController extends Controller
             'email' => $validated['email'] ?? null,
             'occupation' => $validated['occupation'] ?? null,
             'photo_path' => $photoPath,
+            'voter_card_path' => $voterCardPath,
             'state_id' => $validated['state_id'],
             'lga_id' => $validated['lga_id'],
             'ward_id' => $validated['ward_id'],

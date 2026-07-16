@@ -32,6 +32,7 @@ const form = useForm({
     email: '',
     occupation: '',
     photo: null as File | null,
+    voter_card: null as File | null,
     state_id: '',
     lga_id: '',
     ward_id: '',
@@ -89,6 +90,13 @@ const handleFileUpload = (event: Event) => {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
         form.photo = target.files[0];
+    }
+};
+
+const handleVoterCardUpload = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+        form.voter_card = target.files[0];
     }
 };
 
@@ -291,6 +299,22 @@ const submit = () => {
                         <span v-if="form.photo" class="text-sm font-medium text-emerald-600 dark:text-emerald-400">{{ form.photo.name }}</span>
                     </div>
                     <p v-if="form.errors.photo" class="mt-1 text-xs text-rose-500">{{ form.errors.photo }}</p>
+                </div>
+
+                <!-- Voter Card Section -->
+                <div class="border-t border-border pt-8">
+                    <h3 class="text-lg font-semibold text-foreground flex items-center gap-1.5">
+                        Voter Registration Card <span class="text-xs font-bold text-rose-500">* Required</span>
+                    </h3>
+                    <p class="text-xs text-muted-foreground">Upload a clear scan or photograph of permanent or temporary voter card (Required — Max 5MB).</p>
+                    <div class="mt-4 flex items-center gap-4">
+                        <label class="flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-border px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-muted">
+                            <Upload class="size-4" /> Choose Voter Card File
+                            <input type="file" accept="image/*" @change="handleVoterCardUpload" class="hidden" />
+                        </label>
+                        <span v-if="form.voter_card" class="text-sm font-medium text-emerald-600 dark:text-emerald-400">{{ form.voter_card.name }}</span>
+                    </div>
+                    <p v-if="form.errors.voter_card" class="mt-1 text-xs text-rose-500">{{ form.errors.voter_card }}</p>
                 </div>
 
                 <!-- Submit Section -->

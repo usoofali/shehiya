@@ -22,6 +22,7 @@ class Member extends Model
         'email',
         'occupation',
         'photo_path',
+        'voter_card_path',
         'state_id',
         'lga_id',
         'ward_id',
